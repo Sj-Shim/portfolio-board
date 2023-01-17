@@ -6,13 +6,11 @@ import org.hibernate.annotations.ColumnDefault;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
 @Getter
 @ToString(callSuper = true)
-@Table(name = "USER")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends AuditingTimeEntity{
     @Id @Column(length = 20)
@@ -33,7 +31,7 @@ public class User extends AuditingTimeEntity{
     @Column(nullable = false)
     @ColumnDefault("3000")
     @Setter
-    private int point;
+    private Integer point;
 
     private User(String userId, String password, String email, String nickname) {
         this.userId = userId;

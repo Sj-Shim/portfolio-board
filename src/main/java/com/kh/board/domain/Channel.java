@@ -1,12 +1,13 @@
 package com.kh.board.domain;
 
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
+import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -20,6 +21,13 @@ public class Channel extends AuditingTimeEntity{
     @Setter
     @Column(nullable = false)
     private String description;
+
+    @OneToMany(mappedBy = "channel")
+    @ToString.Exclude
+    private final Set<Subscribe> subscribes = new LinkedHashSet<>();
+
+    @Transient
+    private Integer subCount = subscribes.size();
 
     private Channel(String channelName, String description) {
         this.channelName = channelName;

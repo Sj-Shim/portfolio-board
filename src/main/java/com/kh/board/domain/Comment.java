@@ -28,6 +28,7 @@ public class Comment extends AuditingTimeEntity{
     @ManyToOne(optional = false)
     @Setter
     @JoinColumn(name = "userId")
+    @Column(name = "userId")
     private User user;
 
     @Setter
@@ -36,12 +37,13 @@ public class Comment extends AuditingTimeEntity{
 
     @JoinColumn(name = "id")
     @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "parentId")
     private Comment parentId;
 
     @OneToMany(mappedBy = "parentId", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @OrderBy("createdDate desc")
     @ToString.Exclude
-    private List<Comment> child = new ArrayList<>();
+    private List<Comment> children = new ArrayList<>();
 
     private Comment(Post post, User user, String content) {
         this.post = post;

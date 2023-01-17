@@ -18,6 +18,7 @@ public class Category {
     @ManyToOne(optional = false)
     @Setter
     @JoinColumn(name = "channelName")
+    @Column(name = "channelName")
     private Channel channel;
 
     @Setter

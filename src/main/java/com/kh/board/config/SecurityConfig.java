@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login", "/signUp", "/").permitAll()
+                .antMatchers("/login", "/signUp", "/", "/api").permitAll()
                 .anyRequest().authenticated();
     }
 
@@ -49,7 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 //        return username -> userRepository
 //                .findByUserId(username)
 //                .map(UserDto::from)
-//                .map()
+//                .map(BoardPrincipal::from)
+//                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. 사용자 이름 : " + username));
 //    }
 
     @Bean

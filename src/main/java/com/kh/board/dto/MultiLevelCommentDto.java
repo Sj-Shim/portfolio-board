@@ -14,46 +14,46 @@ import java.util.stream.Collectors;
  * A DTO for the {@link Comment} entity
  */
 public record MultiLevelCommentDto(Long id
-        , PostDto post
+        , Long postId
         , UserDto user
         , String content
-        , CommentDto parentId
+        , Long parentId
         , List<CommentDto> children
         , LocalDateTime createdDate
         , LocalDateTime modifiedDate) implements Serializable {
     public static MultiLevelCommentDto of(Long id
-            , PostDto post
+            , Long postId
             , UserDto user
             , String content
-            , CommentDto parentId
+            , Long parentId
             , List<CommentDto> children
             , LocalDateTime createdDate
             , LocalDateTime modifiedDate) {
-        return new MultiLevelCommentDto(id, post, user, content, parentId, children,createdDate, modifiedDate);
+        return new MultiLevelCommentDto(id, postId, user, content, parentId, children,createdDate, modifiedDate);
     }
 
     public static MultiLevelCommentDto of(Long id
-            , PostDto post
+            , Long postId
             , UserDto user
             , String content
-            , CommentDto parentId
+            , Long parentId
             , List<CommentDto> children) {
-        return new MultiLevelCommentDto(id, post, user, content, parentId, children, null, null);
+        return new MultiLevelCommentDto(id, postId, user, content, parentId, children, null, null);
     }
     public static MultiLevelCommentDto of(Long id
-            , PostDto post
+            , Long postId
             , UserDto user
             , String content) {
-        return new MultiLevelCommentDto(id, post, user, content, null,null,null, null);
+        return new MultiLevelCommentDto(id, postId, user, content, null,null,null, null);
     }
     public static MultiLevelCommentDto of(Long id
-            , PostDto post
+            , Long postId
             , UserDto user
             , String content
             , List<CommentDto> children) {
-        return new MultiLevelCommentDto(id, post, user, content, null, children,null, null);
+        return new MultiLevelCommentDto(id, postId, user, content, null, children,null, null);
     }
     public static MultiLevelCommentDto from(Comment comment) {
-        return new MultiLevelCommentDto(comment.getId(), PostDto.from(comment.getPost()), UserDto.from(comment.getUser()), comment.getContent(), CommentDto.from(comment.getParentId()), comment.getChildren().stream().map(CommentDto::from).collect(Collectors.toCollection(ArrayList::new)), comment.getCreatedDate(), comment.getModifiedDate());
+        return new MultiLevelCommentDto(comment.getId(), PostDto.from(comment.getPost()).id(), UserDto.from(comment.getUser()), comment.getContent(), CommentDto.from(comment.getParent()).id(), comment.getReplies().stream().map(CommentDto::from).collect(Collectors.toCollection(ArrayList::new)), comment.getCreatedDate(), comment.getModifiedDate());
     }
 }

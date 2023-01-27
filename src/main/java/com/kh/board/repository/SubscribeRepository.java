@@ -6,12 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import java.util.List;
+import java.util.Optional;
+
 @RepositoryRestResource
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
-    @Query(value = "SELECT count(channel.channelName) FROM Subscribe where channel.channelName like concat('%', #{keyword}, '%')")
-    Integer countByChannel_ChannelName(@Param(value="keyword") String keyword);
 
+    List<Subscribe> findByUser_UserId(String userId);
+    List<Subscribe> findByChannel_ChannelName(String channelName);
 
-
+    Optional<Subscribe> findByUser_UserIdAndChannel_ChannelName(String userId, String channelName);
 }

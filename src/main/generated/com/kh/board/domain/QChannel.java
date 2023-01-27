@@ -32,6 +32,8 @@ public class QChannel extends EntityPathBase<Channel> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedDate = _super.modifiedDate;
 
+    public final StringPath slug = createString("slug");
+
     public final SetPath<Subscribe, QSubscribe> subscribes = this.<Subscribe, QSubscribe>createSet("subscribes", Subscribe.class, QSubscribe.class, PathInits.DIRECT2);
 
     public QChannel(String variable) {

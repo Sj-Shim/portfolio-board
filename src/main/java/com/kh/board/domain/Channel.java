@@ -22,20 +22,26 @@ public class Channel extends AuditingTimeEntity{
     @Column(nullable = false)
     private String description;
 
+    @Setter
+    @Column(length = 50, nullable = false, unique = true)
+    private String slug;
+
     @OneToMany(mappedBy = "channel")
     @ToString.Exclude
     private final Set<Subscribe> subscribes = new LinkedHashSet<>();
 
+
     @Transient
     private Integer subCount = subscribes.size();
 
-    private Channel(String channelName, String description) {
+    private Channel(String channelName, String description, String slug) {
         this.channelName = channelName;
         this.description = description;
+        this.slug = slug;
     }
 
-    public static Channel of(String channelName, String description) {
-        return new Channel(channelName, description);
+    public static Channel of(String channelName, String description, String slug) {
+        return new Channel(channelName, description, slug);
     }
 
     @Override

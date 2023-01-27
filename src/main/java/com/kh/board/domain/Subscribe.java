@@ -20,13 +20,11 @@ public class Subscribe {
     @ManyToOne(optional = false)
     @Setter
     @JoinColumn(name = "channelName")
-    @Column(name = "channelName")
     private Channel channel;
 
     @ManyToOne(optional = false)
     @Setter
     @JoinColumn(name = "userId")
-    @Column(name = "userId")
     private User user;
 
     @CreatedDate

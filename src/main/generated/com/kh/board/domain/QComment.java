@@ -24,8 +24,6 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final QAuditingTimeEntity _super = new QAuditingTimeEntity(this);
 
-    public final ListPath<Comment, QComment> children = this.<Comment, QComment>createList("children", Comment.class, QComment.class, PathInits.DIRECT2);
-
     public final StringPath content = createString("content");
 
     //inherited
@@ -36,9 +34,11 @@ public class QComment extends EntityPathBase<Comment> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedDate = _super.modifiedDate;
 
-    public final QComment parentId;
+    public final QComment parent;
 
     public final QPost post;
+
+    public final ListPath<Comment, QComment> replies = this.<Comment, QComment>createList("replies", Comment.class, QComment.class, PathInits.DIRECT2);
 
     public final QUser user;
 
@@ -60,7 +60,7 @@ public class QComment extends EntityPathBase<Comment> {
 
     public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.parentId = inits.isInitialized("parentId") ? new QComment(forProperty("parentId"), inits.get("parentId")) : null;
+        this.parent = inits.isInitialized("parent") ? new QComment(forProperty("parent"), inits.get("parent")) : null;
         this.post = inits.isInitialized("post") ? new QPost(forProperty("post"), inits.get("post")) : null;
         this.user = inits.isInitialized("user") ? new QUser(forProperty("user")) : null;
     }

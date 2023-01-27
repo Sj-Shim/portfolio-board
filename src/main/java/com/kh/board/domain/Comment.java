@@ -19,49 +19,51 @@ import java.util.Objects;
 public class Comment extends AuditingTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(insertable = false, updatable = false)
     private Long id;
 
     @Setter
     @ManyToOne(optional = false)
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne(optional = false)
     @Setter
     @JoinColumn(name = "userId")
-    @Column(name = "userId")
     private User user;
 
     @Setter
     @Column(length = 500, nullable = false)
     private String content;
 
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "parent_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "parentId")
-    private Comment parentId;
+    @ToString.Exclude
+    @Setter
+    private Comment parent;
 
-    @OneToMany(mappedBy = "parentId", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @OrderBy("createdDate desc")
     @ToString.Exclude
-    private List<Comment> children = new ArrayList<>();
+    private List<Comment> replies = new ArrayList<>();
 
     private Comment(Post post, User user, String content) {
         this.post = post;
         this.user = user;
         this.content = content;
     }
-    private Comment(Post post, User user, String content, Comment parentId) {
+    private Comment(Post post, User user, String content, Comment parent) {
         this.post = post;
         this.user = user;
         this.content = content;
-        this.parentId = parentId;
+        this.parent = parent;
     }
 
     public static Comment of(Post post, User user, String content) {
         return new Comment(post, user, content);
     }
-    public static Comment of(Post post, User user, String content, Comment parentId) {
-        return new Comment(post, user, content, parentId);
+    public static Comment of(Post post, User user, String content, Comment parent) {
+        return new Comment(post, user, content, parent);
     }
 
     @Override

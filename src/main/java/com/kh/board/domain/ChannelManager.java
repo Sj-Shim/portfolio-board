@@ -1,5 +1,6 @@
 package com.kh.board.domain;
 
+import com.kh.board.converter.ManagerLevelConverter;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,17 +19,16 @@ public class ChannelManager {
     @ManyToOne(optional = false)
     @Setter
     @JoinColumn(name = "channelName")
-    @Column(name = "channelName")
     private Channel channel;
 
     @ManyToOne(optional = false)
     @Setter
     @JoinColumn(name = "userId")
-    @Column(name = "userId")
     private User user;
 
     @Setter
     @Column(nullable = false)
+    @Convert(converter = ManagerLevelConverter.class)
     private ManagerLevel managerLevel;
 
     private ChannelManager(Channel channel, User user, ManagerLevel managerLevel) {

@@ -1,9 +1,15 @@
 package com.kh.board.domain;
 
+import com.kh.board.repository.ChannelRepository;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 import java.util.Objects;
+
+
 
 @Entity
 @Getter
@@ -18,7 +24,6 @@ public class Category {
     @ManyToOne(optional = false)
     @Setter
     @JoinColumn(name = "channelName")
-    @Column(name = "channelName")
     private Channel channel;
 
     @Setter
@@ -29,6 +34,7 @@ public class Category {
         this.channel = channel;
         this.categoryName = categoryName;
     }
+
 
     public static Category of(Channel channel, String categoryName) {
         return new Category(channel, categoryName);

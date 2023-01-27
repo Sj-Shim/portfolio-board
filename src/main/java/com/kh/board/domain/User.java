@@ -3,9 +3,8 @@ package com.kh.board.domain;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -13,7 +12,7 @@ import java.util.Objects;
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends AuditingTimeEntity{
-    @Id @Column(length = 20)
+    @Id @Column(length = 20, updatable = false)
     private String userId;
 
     @Column(nullable = false, length = 100)
@@ -32,6 +31,10 @@ public class User extends AuditingTimeEntity{
     @ColumnDefault("3000")
     @Setter
     private Integer point;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Subscribe> subscribes;
 
     private User(String userId, String password, String email, String nickname) {
         this.userId = userId;

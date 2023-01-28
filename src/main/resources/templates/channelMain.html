@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="/css/chanMain.css">
+    <link rel="stylesheet" th:href="@{/css/chanMain.css}">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
+</head>
+<body class="body">
+<div id="top"></div>
+
+    <div class="root-container">
+        <header class="p-3 text-bg-dark" id="header"> <!--th:include="header.html"-->
+            <div class="container-md">
+              <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <ion-icon name="home-outline" size="large"></ion-icon>
+                </a>
+        
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown" aria-expanded="false">구독
+                            <span class="d-none d-md-inline"> </span>
+                            <span class="d-none d-md-inline">채널</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#">Action</a></li>
+                          <li><a class="dropdown-item" href="#">Another action</a></li>
+                          <li><a class="dropdown-item" href="#">Something else here</a></li>
+                          <li class="dropdown-divider"></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="d-none d-md-inline">채널</span>
+                            <span class="d-none d-md-inline"> </span>
+                            검색
+                        </a>
+                    </li>
+                </ul>
+        
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                  <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
+                </form>
+        
+                <div class="text-end">
+                  <button type="button" class="btn btn-outline-light me-2">Login</button>
+                  <button type="button" class="btn btn-warning">Sign-up</button>
+                </div>
+              </div>
+            </div>
+        </header>
+
+        <div class="content-wrapper clearfix">
+            <article class="container-md board-article">
+                <div class="board-article-list">
+                    <div class="board-title">
+                        <div class="left">
+                            <a href="/" class="channel-icon-link" aria-label="채널 이동">
+                                <!-- <img src="" alt="채널아이콘" class="channel-icon"> -->
+                                <div class="channel-icon text-icon">0</div>
+                            </a>
+                        </div>
+                        <div class="right">
+                            <div class="head">
+                                <a  href="/" class="title" >
+                                    <span >00 채널</span>
+                                </a>
+                                <a href="javascript:void(0)" class="info-btn" role="button">
+                                    <ion-icon name="information-circle-outline"></ion-icon>
+                                </a>
+
+                                <div class="buttons">
+                                    <a href="/{slug}/subscribe"  class="btn btn-sm subscribe-btn">
+                                        <span class="subscribe">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                            <span class="text">구독</span>
+                                        </span>
+                                        <span class="subscribed">
+                                            <ion-icon name="checkmark-outline"></ion-icon>
+                                            <span class="text">구독 중</span>
+                                        </span>
+                                        <span class="unsubscribe">
+                                            <ion-icon name="close-outline"></ion-icon>
+                                            <span class="text">구독 취소</span>
+                                        </span>
+                                        </a>
+                                </div>
+                            </div>
+                            <div class="description">
+                                <div>
+                                    <span id="subCount">구독자 명</span>
+                                    <span class="sep"></span>
+                                    <span class="user-info">
+                                        <span >관리자명</span>
+                                    </span>
+                                </div>
+                                <div id="chanDesc">description</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btns-board">
+                        <div class="float-right">
+                            <a  class="btn btn-sm btn-arca btn-arca-article-write" title="글쓰기">
+                                <ion-icon name="reader-outline" style="font-size: 0.8rem;"></ion-icon>
+                                &nbsp;글쓰기
+                            </a>
+                        </div>
+                        <div class="float-left">
+                            <a  class="btn btn-sm btn-arca float-left">
+                                <ion-icon name="reader-outline" style="font-size: 0.8rem;"></ion-icon>
+                                <span>전체글</span>
+                            </a>
+<!--                            <select class="form-control select-list-type" name="sort" style="padding-right: 14px">-->
+<!--                                <option value="">등록순</option>-->
+<!--                                <option value="rating">추천순 (24시간)</option>-->
+<!--                                <option value="rating72">추천순 (3일)</option>-->
+<!--                                <option value="ratingAll">추천순 (전체)</option>-->
+<!--                                <option value="commentCount">댓글갯수순 (3일)</option>-->
+<!--                                <option value="recentComment">최근댓글순</option>-->
+<!--                            </select>-->
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="article-list">
+<!--                        <div class="board-category-wrapper">-->
+<!--                            <div class="board-category hide-scrollbar">-->
+<!--                                <span class="item">-->
+<!--                                    <a th:href="@{'/'+${chanInfo.slug}+'?category='}" class="active">카테</a>-->
+<!--                                </span>-->
+<!--                                <div class="dummy"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="list-table table">
+                            <div class="vrow column head d-none d-md-flex">
+                                <div class="vrow-inner">
+                                    <div class="vrow-top">
+                                        <span class="vcol col-id"> 번호 </span>
+                                        <span class="vcol col-title"> 제목 </span>
+                                    </div>
+                                    <div class="vrow-bottom">
+                                        <span class="vcol col-author">작성자</span>
+                                        <span class="vcol col-time">작성일</span>
+                                        <span class="vcol col-view">조회수</span>
+                                        <span class="vcol col-rate">추천</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a class="'vrow column'">
+                                <div class="vrow-inner">
+                                    <div class="vrow-top">
+                                        <span class="vcol col-id" >
+                                            {postId}
+                                        </span>
+                                        <span class="vcol col-title">
+                                            <span class="badges">
+<!--                                                <span class="badge badge-success" th:if="${post.categoryName!=null}" th:text="${post.categoryName}">{category}</span>-->
+                                            </span>
+                                            <span class="title" >{title}</span>
+                                            <span class="info"></span>
+                                        </span>
+                                    </div>
+                                    <div class="vrow-bottom">
+                                        <span class="vcol col-author">
+                                            <span >{nickname}</span>
+                                        </span>
+                                        <span class="vcol col-time">
+                                            <time data-format="Q">{createdDate}</time>
+                                        </span>
+                                        <span class="vcol col-view" >
+                                            {hit}
+                                        </span>
+                                        <span class="vcol col-rate" >
+                                            {rating}
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="btns-board">
+                        <div class="float-right">
+                            <a class="btn btn-sm btn-arca btn-arca-article-write" title="글쓰기">
+                                <ion-icon name="reader-outline" style="font-size: 0.8rem;"></ion-icon>
+                                &nbsp;글쓰기
+                            </a>
+                        </div>
+                        <div class="float-left">
+                            <a  class="btn btn-sm btn-arca float-left">
+                                <ion-icon name="reader-outline" style="font-size: 0.8rem;"></ion-icon>
+                                <span>전체글</span>
+                            </a>
+<!--                            <select class="form-control select-list-type" name="sort">-->
+<!--                                <option value="">등록순</option>-->
+<!--                                <option value="rating">추천순 (24시간)</option>-->
+<!--                                <option value="rating72">추천순 (3일)</option>-->
+<!--                                <option value="ratingAll">추천순 (전체)</option>-->
+<!--                                <option value="commentCount">댓글갯수순 (3일)</option>-->
+<!--                                <option value="recentComment">최근댓글순</option>-->
+<!--                            </select>-->
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <form method="get" class="form-inline search-form justify-content-end">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <select class="form-control form-control-sm" name="target" id="search-type">
+                                    <option value="all">전체</option>
+                                    <option value="title_content">제목내용</option>
+                                    <option value="title">제목</option>
+                                    <option value="content">내용</option>
+                                    <option value="nickname">글쓴이</option>
+                                </select>
+                            </div>
+                            <span class="d-none" id="searchFormLabel">Keyword search form input</span>
+                            <input type="text" class="form-control form-control-sm" name="keyword" value="" aria-labelledby="searchFormLabel">
+                            <div class="input-group-append">
+                                <button class="btn btn-arca btn-sm" type="submit">검색</button>
+                            </div>
+                        </div>
+                    </form>
+                    <nav class="pagination-wrapper">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item">
+                                <a class="page-link"></a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="/{slug}?page=1">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link"></a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <p class="text-center"></p>
+                </div>
+            </article>
+        </div>
+
+
+
+        <div id="footer">
+            <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top footer">
+                <div class="container-md">
+                    <div class="col-md-4 d-flex align-items-center">
+                    <span class="mb-md-0 text-muted">© 2023 Company, Inc</span>
+                    <span class="sep"></span>
+                    <a href="mailto:lastfolio227@gmail.com">Contact Us</a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+<!--        <ul class="nav-control">-->
+<!--            <li>-->
+<!--            <a href="#top" id="goTopBtn" title="맨위로 이동">-->
+<!--                <ion-icon name="caret-up-outline"></ion-icon>-->
+<!--            </a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--            <a href="#bottom" id="goBottomBtn" title="맨아래로 이동">-->
+<!--                <ion-icon name="caret-down-outline"></ion-icon>-->
+<!--            </a>-->
+<!--            </li>-->
+<!--        </ul>-->
+    </div>
+
+
+    <script>
+       $(function() {
+            let foldBtn = document.querySelector('.head>.info-btn');
+            foldBtn.addEventListener("click", function() {
+                $('.right>.description').toggleClass('show');
+            });
+
+            let chan = document.querySelectorAll('a[data-chan]')[0];
+            let subList = document.querySelectorAll('a[data-sublist]');
+            for(let j = 0; j<subList.length; j++){
+                if(chan.dataset.chan == subList[j].dataset.sublist){
+                    chan.classList.add('active');
+                }
+            }
+        })
+    </script>
+
+
+<div id="bottom"></div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

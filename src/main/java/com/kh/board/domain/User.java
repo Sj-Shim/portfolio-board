@@ -4,8 +4,11 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -32,9 +35,13 @@ public class User extends AuditingTimeEntity{
     @Setter
     private Integer point;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<Subscribe> subscribes;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<ChannelManager> channelManagers = new LinkedHashSet<>();
 
     private User(String userId, String password, String email, String nickname) {
         this.userId = userId;

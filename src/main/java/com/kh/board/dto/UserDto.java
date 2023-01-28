@@ -2,6 +2,7 @@ package com.kh.board.dto;
 
 import com.kh.board.domain.Subscribe;
 import com.kh.board.domain.User;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -31,6 +32,14 @@ public record UserDto(String userId
             , LocalDateTime modifiedDate
     ){
         return new UserDto(userId, password, email, nickname, point, subscribeDtos, createdDate, modifiedDate);
+    }
+    public static UserDto of(
+            String userId
+            , String password
+            , String email
+            , String nickname
+            , Integer point){
+        return new UserDto(userId, password, email, nickname, point, null, null, null);
     }
     public static UserDto of(
             String userId
@@ -69,7 +78,8 @@ public record UserDto(String userId
         return User.of(this.userId, this.password, this.email, this.nickname);
     }
 
-    public static List<SubscribeDto> from(List<Subscribe > subscribes) {
+
+    public static List<SubscribeDto> from(List<Subscribe> subscribes) {
         return subscribes.stream().map(SubscribeDto::from).collect(Collectors.toList());
     }
 }

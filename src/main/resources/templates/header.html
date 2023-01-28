@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Document</title>
+</head>
+<body>
+<header class="p-3 text-bg-dark" id="header">
+  <div class="container-md">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <ion-icon name="home-outline" size="large"></ion-icon>
+      </a>
+
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown" aria-expanded="false">구독
+            <span class="d-none d-md-inline"> </span>
+            <span class="d-none d-md-inline">채널</span>
+          </a>
+<!--          <ul class="dropdown-menu">-->
+<!--            <li  class="dropdown-item">구독중인 채널이 없습니다</li>-->
+<!--          </ul>-->
+          <ul class="dropdown-menu" sec:authorize="!isAuthenticated()">
+            <li class="dropdown-item">구독중인 채널이 없습니다.</li>
+          </ul>
+          <ul class="dropdown-menu" sec:authorize="isAuthenticated()" >
+            <li th:each="sub : ${subList}"><a th:data-sublist="${sub.channel.slug}" class="dropdown-item" th:href="@{'/'+${sub.channel.slug}}" th:text="${sub.channel.channelName}"></a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="d-none d-md-inline">채널</span>
+            <span class="d-none d-md-inline"> </span>
+            검색
+          </a>
+        </li>
+      </ul>
+
+      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+        <input type="search" class="form-control form-control-dark text-bg-white" placeholder="Search..." aria-label="Search">
+      </form>
+
+      <div class="text-end" sec:authorize="!isAuthenticated()">
+        <a href="/login" class="btn btn-outline-light me-2">Login</a>
+        <a href="/signup" class="btn btn-warning">Sign-up</a>
+      </div>
+      <div class="text-end" sec:authorize="isAuthenticated()">
+        <a class="nav-item dropdown-toggle text-white" href="javascript:void(0)" data-bs-toggle="dropdown" aria-expanded="false">
+          <span class="username d-none d-sm-inline" th:text="${userInfo.nickname}"></span>
+          <ion-icon name="person-circle-outline" style="font-size: 1rem"></ion-icon>
+        </a>
+        <div class="dropdown-menu user-dropdown-menu right">
+          <div class="user-info">
+            <div class="username" th:text="${userInfo.nickname}"></div>
+            <div th:text="${userInfo.point}+'ⓟ'"></div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/createChannel">채널 만들기</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/logout">로그아웃</a>
+        </div>
+
+    </div>
+  </div>
+</header>
+</body>
+</html>

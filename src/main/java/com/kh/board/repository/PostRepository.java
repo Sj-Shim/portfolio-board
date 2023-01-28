@@ -35,7 +35,7 @@ public interface PostRepository extends JpaRepository<Post, Long>
     Page<Post> findByChannel_ChannelName(String channelName, Pageable pageable);
 
     /** 채널별 카테고리 필터*/
-    Page<Post> findByChannel_ChannelNameAndCategory_CategoryName(String channelName, String categoryName, Pageable pageable);
+//    Page<Post> findByChannel_ChannelNameAndCategory_CategoryName(String channelName, String categoryName, Pageable pageable);
 
     void deleteByIdAndUser_UserId(Long id, String userId);
 
@@ -44,7 +44,7 @@ public interface PostRepository extends JpaRepository<Post, Long>
     default void customize(QuerydslBindings bindings, QPost root) {
         bindings.excludeUnlistedProperties(true);
 
-        bindings.including(root.title, root.content, root.comments, root.user, root.createdDate, root.channel, root. category);
+        bindings.including(root.title, root.content, root.comments, root.user, root.createdDate, root.channel/*, root. category*/);
 
         bindings.bind(root.title).first(StringExpression::containsIgnoreCase);
         bindings.bind(root.content).first(StringExpression::containsIgnoreCase);

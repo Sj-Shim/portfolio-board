@@ -8,19 +8,19 @@ import com.kh.board.dto.UserDto;
 
 public record PostRequest(
         String title,
-        Integer categoryId,
+//        Integer categoryId,
         String content
 
 ) {
-   public static PostRequest of(String title, Integer categoryId, String content) {
-       return new PostRequest(title, categoryId, content);
+   public static PostRequest of(String title, /*Integer categoryId,*/ String content) {
+       return new PostRequest(title, /*categoryId,*/ content);
    }
 
    public PostDto toDto(UserDto userDto) {
        return PostDto.of(
                null,
                userDto,
-               this.categoryId,
+//               this.categoryId,
                this.title,
                this.content
        );

@@ -22,6 +22,8 @@ public class QChannel extends EntityPathBase<Channel> {
 
     public final QAuditingTimeEntity _super = new QAuditingTimeEntity(this);
 
+    public final SetPath<ChannelManager, QChannelManager> channelManagers = this.<ChannelManager, QChannelManager>createSet("channelManagers", ChannelManager.class, QChannelManager.class, PathInits.DIRECT2);
+
     public final StringPath channelName = createString("channelName");
 
     //inherited
@@ -33,6 +35,8 @@ public class QChannel extends EntityPathBase<Channel> {
     public final DateTimePath<java.time.LocalDateTime> modifiedDate = _super.modifiedDate;
 
     public final StringPath slug = createString("slug");
+
+    public final NumberPath<Integer> subCount = createNumber("subCount", Integer.class);
 
     public final SetPath<Subscribe, QSubscribe> subscribes = this.<Subscribe, QSubscribe>createSet("subscribes", Subscribe.class, QSubscribe.class, PathInits.DIRECT2);
 

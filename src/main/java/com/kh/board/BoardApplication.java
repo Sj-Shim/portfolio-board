@@ -17,8 +17,4 @@ public class BoardApplication {
         SpringApplication.run(BoardApplication.class, args);
     }
 
-//    @Bean
-//    public PageableHandlerMethodArgumentResolverCustomizer customizer() {
-//        return p -> p.setOneIndexedParameters(true);
-//    }
 }

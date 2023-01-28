@@ -22,6 +22,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final QAuditingTimeEntity _super = new QAuditingTimeEntity(this);
 
+    public final SetPath<ChannelManager, QChannelManager> channelManagers = this.<ChannelManager, QChannelManager>createSet("channelManagers", ChannelManager.class, QChannelManager.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 

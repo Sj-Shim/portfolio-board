@@ -20,34 +20,37 @@ import java.util.stream.Collectors;
 public record PostWithCommentDto(Long id
         , String channelName
         , UserDto user
-        , Integer categoryId
+//        , Integer categoryId
         , List<CommentDto> commentDtos
         , String title
         , String content
         , Integer rating
+        , Integer hit
         , LocalDateTime createdDate
         , LocalDateTime modifiedDate) implements Serializable {
     public static PostWithCommentDto of(Long id
             , String channelName
             , UserDto user
-            , Integer categoryId
+//            , Integer categoryId
             , List<CommentDto> commentDtos
             , String title
             , String content
             , Integer rating
+            , Integer hit
             , LocalDateTime createdDate
             , LocalDateTime modifiedDate){
-        return new PostWithCommentDto(id, channelName, user, categoryId, commentDtos,title, content, rating, createdDate, modifiedDate);
+        return new PostWithCommentDto(id, channelName, user, /*categoryId,*/ commentDtos,title, content, rating, hit, createdDate, modifiedDate);
     }
     public static PostWithCommentDto of(Long id
             , String channelName
             , UserDto user
-            , Integer categoryId
+//            , Integer categoryId
             , List<CommentDto> commentDtos
             , String title
             , String content
-            , Integer rating){
-        return new PostWithCommentDto(id, channelName, user, categoryId, commentDtos,title, content, rating, null, null);
+            , Integer rating
+            , Integer hit){
+        return new PostWithCommentDto(id, channelName, user, /*categoryId,*/ commentDtos,title, content, rating, hit,null, null);
     }
     public static PostWithCommentDto of(Long id
             , String channelName
@@ -56,11 +59,11 @@ public record PostWithCommentDto(Long id
             , String title
             , String content)
             {
-        return new PostWithCommentDto(id, channelName, user, null, commentDtos, title, content, null, null, null);
+        return new PostWithCommentDto(id, channelName, user, /*null,*/ commentDtos, title, content, null, null,null, null);
     }
 
     public static PostWithCommentDto from(Post post, ChannelRepository channelRepository) {
-        return new PostWithCommentDto(post.getId(), ChannelDto.from(post.getChannel()).channelName(), UserDto.from(post.getUser()), CategoryDto.from(post.getCategory()).toEntity(channelRepository).getId(), post.getComments().stream().map(CommentDto::from).collect(Collectors.toList()), post.getTitle(), post.getContent(), post.getRating(), post.getCreatedDate(), post.getModifiedDate());
+        return new PostWithCommentDto(post.getId(), ChannelDto.from(post.getChannel()).channelName(), UserDto.from(post.getUser()), /*CategoryDto.from(post.getCategory()).toEntity(channelRepository).getId(),*/ post.getComments().stream().map(CommentDto::from).collect(Collectors.toList()), post.getTitle(), post.getContent(), post.getRating(), post.getHit(), post.getCreatedDate(), post.getModifiedDate());
     }
 
 }

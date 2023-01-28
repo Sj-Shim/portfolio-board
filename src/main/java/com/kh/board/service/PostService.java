@@ -24,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -45,36 +42,36 @@ public class PostService {
         return postRepository.findAll().stream().map(PostDto::from).collect(Collectors.toList());
     }
 
-    public Page<PostDto> searchChannelPosts(String channelName, Pageable pageable) {
-        return postRepository.findByChannel_ChannelName(channelName, pageable).map(PostDto::from);
+    public Page<PostDto> searchChannelPosts(String slug, Pageable pageable) {
+        return postRepository.findByChannel_ChannelName(slug, pageable).map(PostDto::from);
     }
 
-    public Page<PostDto> searchChannelPostsByCategory(String channelName, String categoryName, Pageable pageable) {
-        return postRepository.findByChannel_ChannelNameAndCategory_CategoryName(channelName, categoryName, pageable).map(PostDto::from);
-    }
+//    public Page<PostDto> searchChannelPostsByCategory(String slug, String categoryName, Pageable pageable) {
+//        return postRepository.findByChannel_ChannelNameAndCategory_CategoryName(slug, categoryName, pageable).map(PostDto::from);
+//    }
 
     @Transactional(readOnly = true)
-    public Page<PostDto> searchPosts(String channelName, SearchType searchType, String keyword, Pageable pageable){
+    public Page<PostDto> searchPosts(String slug, SearchType target, String keyword, Pageable pageable){
 
         if(keyword == null || keyword.isBlank()){
-            Page<PostDto> pageA = postRepository.findAll(pageable).map(PostDto::from);
-            Page<PostDto> pageB = postRepository.findByChannelEquals(channelRepository.getReferenceById(channelName), pageable).map(PostDto::from);
+//            Page<PostDto> pageA = postRepository.findAll(pageable).map(PostDto::from);
+//            Page<PostDto> pageB = postRepository.findByChannelEquals(channelRepository.findBySlugEquals(slug).orElseThrow(()->new EntityNotFoundException("searchPosts 슬러그로 채널 못찾음:" +slug)), pageable).map(PostDto::from);
 
-            Set<PostDto> setPost = new HashSet<>(pageA.getContent());
-            setPost.addAll(pageB.getContent());
-            Page<PostDto> combinedPage = new PageImpl<>(new ArrayList<>(setPost), pageable, setPost.size());
+
+//            Set<PostDto> setPost = new HashSet<>(pageA.getContent());
+//            setPost.addAll(pageB.getContent());
+//            Page<PostDto> combinedPage = new PageImpl<>(new ArrayList<>(setPost), pageable, setPost.size());
 //            return postRepository.findAll(pageable).map(PostDto::from);
-            return combinedPage;
+//            return combinedPage;
+            return postRepository.findByChannelEquals(channelRepository.findBySlugEquals(slug).orElseThrow(()->new EntityNotFoundException("searchPosts 슬러그로 채널 못찾음:" +slug)), pageable).map(PostDto::from);
         }
 
-        return switch (searchType){
+        return switch (target){
             case ALL -> postRepository.findByTitleContainingIgnoreCaseOrContentIsContainingIgnoreCaseOrUser_NicknameContainingIgnoreCase(keyword, keyword, keyword, pageable).map(PostDto::from);
             case TITLE -> postRepository.findByTitleContainingIgnoreCase(keyword, pageable).map(PostDto::from);
-
             case TITLEORCONTENT -> postRepository.findByTitleContainingIgnoreCaseOrContentIsContainingIgnoreCase(keyword, keyword, pageable).map(PostDto::from);
             case CONTENT -> postRepository.findByContentContainingIgnoreCase(keyword, pageable).map(PostDto::from);
             case USER -> postRepository.findByUser_NicknameContainingIgnoreCase(keyword, pageable).map(PostDto::from);
-            case COMMENT -> commentRepository.findDistinctByContentContainingIgnoreCase(keyword, pageable).map(PostDto::from);
         };
     }
 
@@ -100,9 +97,15 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostWithCommentDto getPostWithComments(Long postId) {
+        increaseHit(postId);
         return postRepository.findById(postId)
                 .map(post -> PostWithCommentDto.from(post, channelRepository))
                 .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다. 글번호 : " + postId));
+    }
+    public void increaseHit(Long postId){
+        Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        post.setHit(post.getHit()+1);
+        postRepository.save(post);
     }
 
     public void savePost(PostDto dto) {

@@ -16,7 +16,8 @@ public record BoardPrincipal(
         String password,
         Collection<? extends GrantedAuthority> authorities,
         String email,
-        String nickname
+        String nickname,
+        Integer point
 ) implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -53,18 +54,18 @@ public record BoardPrincipal(
         return true;
     }
 
-    public static BoardPrincipal of(String username, String password, String email, String nickname){
+    public static BoardPrincipal of(String username, String password, String email, String nickname, Integer point){
         Set<RoleType> roleTypes = Set.of(RoleType.USER);
 
-        return new BoardPrincipal(username, password, roleTypes.stream().map(RoleType::getName).map(SimpleGrantedAuthority::new).collect(Collectors.toUnmodifiableSet()), email, nickname);
+        return new BoardPrincipal(username, password, roleTypes.stream().map(RoleType::getName).map(SimpleGrantedAuthority::new).collect(Collectors.toUnmodifiableSet()), email, nickname, point);
     }
 
     public static BoardPrincipal from(UserDto dto) {
-        return BoardPrincipal.of(dto.userId(), dto.password(), dto.email(), dto.nickname());
+        return BoardPrincipal.of(dto.userId(), dto.password(), dto.email(), dto.nickname(), dto.point());
     }
 
     public UserDto toDto() {
-        return UserDto.of(username, password, email, nickname);
+        return UserDto.of(username, password, email, nickname, point);
     }
 
     @Getter

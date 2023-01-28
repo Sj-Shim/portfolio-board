@@ -26,8 +26,6 @@ public class QSubscribe extends EntityPathBase<Subscribe> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> subStartDate = createDateTime("subStartDate", java.time.LocalDateTime.class);
-
     public final QUser user;
 
     public QSubscribe(String variable) {

@@ -12,7 +12,7 @@ public record SubscribeRequest(
         return new SubscribeRequest(channelName, userId);
     }
 
-    public SubscribeDto toDto() {
-        return SubscribeDto.of(null, channelName, userId,  null);
-    }
+//    public SubscribeDto toDto() {
+//        return SubscribeDto.of(null, channelName, userId,  null);
+//    }
 }

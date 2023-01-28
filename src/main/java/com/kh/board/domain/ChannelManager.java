@@ -18,7 +18,7 @@ public class ChannelManager {
 
     @ManyToOne(optional = false)
     @Setter
-    @JoinColumn(name = "channelName")
+    @JoinColumn(name = "slug")
     private Channel channel;
 
     @ManyToOne(optional = false)

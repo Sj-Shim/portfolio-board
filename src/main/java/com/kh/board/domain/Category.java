@@ -11,7 +11,7 @@ import java.util.Objects;
 
 
 
-@Entity
+//@Entity
 @Getter
 @ToString
 @Table(name = "CATEGORY")
@@ -23,12 +23,15 @@ public class Category {
 
     @ManyToOne(optional = false)
     @Setter
-    @JoinColumn(name = "channelName")
+    @JoinColumn(name = "slug")
     private Channel channel;
 
     @Setter
     @Column(nullable = false, length = 20)
     private String categoryName;
+
+    @OneToOne(mappedBy = "category", fetch = FetchType.EAGER)
+    private Post post;
 
     private Category(Channel channel, String categoryName) {
         this.channel = channel;

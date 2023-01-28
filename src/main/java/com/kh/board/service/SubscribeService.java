@@ -3,6 +3,7 @@ package com.kh.board.service;
 import com.kh.board.domain.Channel;
 import com.kh.board.domain.Subscribe;
 import com.kh.board.domain.User;
+import com.kh.board.dto.ChannelDto;
 import com.kh.board.dto.SubscribeDto;
 import com.kh.board.dto.request.SubscribeRequest;
 import com.kh.board.repository.ChannelRepository;
@@ -31,8 +32,17 @@ public class SubscribeService {
         subscribeRepository.save(subscribe);
     }
 
+    public boolean checkSubscribe(String slug, String userId) {
+        return subscribeRepository.existsByChannel_ChannelNameAndUser_UserId(slug, userId);
+    }
+
     public List<SubscribeDto> getUserSubscribes(String userId){
+
         return subscribeRepository.findByUser_UserId(userId).stream().map(SubscribeDto::from).collect(Collectors.toList());
+    }
+    public List<Subscribe> getFullInfoSubs(String userId) {
+        List<SubscribeDto> el = getUserSubscribes(userId);
+        return el.stream().map(e -> new SubscribeDto(e.id(),e.slug(),e.userId()).toEntity(channelRepository, userRepository)).collect(Collectors.toList());
     }
 
     public void deleteSubscribe(String userId, String channelName){

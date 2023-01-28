@@ -24,8 +24,6 @@ public class QPost extends EntityPathBase<Post> {
 
     public final QAuditingTimeEntity _super = new QAuditingTimeEntity(this);
 
-    public final QCategory category;
-
     public final QChannel channel;
 
     public final SetPath<Comment, QComment> comments = this.<Comment, QComment>createSet("comments", Comment.class, QComment.class, PathInits.DIRECT2);
@@ -34,6 +32,8 @@ public class QPost extends EntityPathBase<Post> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
+
+    public final NumberPath<Integer> hit = createNumber("hit", Integer.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -64,7 +64,6 @@ public class QPost extends EntityPathBase<Post> {
 
     public QPost(Class<? extends Post> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.category = inits.isInitialized("category") ? new QCategory(forProperty("category"), inits.get("category")) : null;
         this.channel = inits.isInitialized("channel") ? new QChannel(forProperty("channel")) : null;
         this.user = inits.isInitialized("user") ? new QUser(forProperty("user")) : null;
     }

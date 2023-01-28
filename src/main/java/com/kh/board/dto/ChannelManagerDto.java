@@ -24,7 +24,7 @@ public record ChannelManagerDto(
     }
 
     public static ChannelManagerDto from(ChannelManager channelManager) {
-        return new ChannelManagerDto(ChannelDto.from(channelManager.getChannel()).channelName(), UserDto.from(channelManager.getUser()), channelManager.getManagerLevel());
+        return new ChannelManagerDto(ChannelDto.from2(channelManager.getChannel()).channelName(), UserDto.from(channelManager.getUser()), channelManager.getManagerLevel());
     }
 
     public ChannelManager toEntity(ChannelRepository channelRepository) {

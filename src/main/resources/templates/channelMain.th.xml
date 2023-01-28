@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<thlogic>
+    <attr sel="#header" th:replace="header :: #header" />
+    <attr sel="#footer" th:replace="footer :: #footer" />
+
+    <attr sel="a.channel-icon-link" th:href="@{'/'+${chanInfo.slug}}" />
+    <attr sel="div.channel-icon" th:text="${#strings.substring(chanInfo.channelName, 0, 1)}" />
+
+    <attr sel=".head">
+        <attr sel=".title" th:href="@{'/'+${chanInfo.slug}}" th:data-channel="${chanInfo.channelName}+'채널'">
+            <attr sel="span" th:title="${chanInfo.channelName}+' 채널'" th:text="${chanInfo.channelName}+' 채널'"/>
+        </attr>
+        <attr sel=".buttons">
+            <attr sel=".subscribe-btn" th:href="@{'/'+${chanInfo.slug}+'/subscribe'}" th:data-chan="${chanInfo.channelName}" />
+        </attr>
+    </attr>
+    <attr sel=".description">
+        <attr sel="div[0]">
+            <attr sel="#subCount" th:text="'구독자 '+ ${chanInfo.subscribeDtos.size()}+'명'"/>
+            <attr sel=".user-info">
+                <attr sel="span" th:text="'관리자 '+${chanInfo.channelManagerDtos()[0].user().nickname}"/>
+            </attr>
+        </attr>
+        <attr sel="#chanDesc" th:text="${chanInfo.description}"/>
+    </attr>
+
+    <attr sel="div.btns-board">
+        <attr sel="div.float-right">
+            <attr sel="a.btn-arca-article-write" th:href="@{'/'+${chanInfo.slug}+'/write'}" />
+        </attr>
+        <attr sel="div.float-left">
+            <attr sel="a.btn-arca.float-left" th:href="@{'/'+${chanInfo.slug}}" />
+            <attr sel="select.form-control.select-list-type">
+
+            </attr>
+        </attr>
+    </attr>
+
+    <attr sel="div.article-list">
+        <attr sel="div.list-table">
+            <attr sel="a" th:href="@{'/'+${chanInfo.slug}+'/'+${post.id}+'?p='+${posts.number}}" th:class="'vrow column'" th:each="post :${posts}">
+                <attr sel=".col-id" th:text="${post.id}"/>
+                <attr sel=".col-title">
+                    <attr sel=".title" th:text="${post.title}"/>
+                </attr>
+                <attr sel=".col-author">
+                    <attr sel="span" th:data-filter="${post.nickname}" th:text="${post.nickname}"/>
+                </attr>
+                <attr sel=".col-time">
+                    <attr sel="time" th:datetime="${post.createdDate}" data-format="Q" th:text="${#temporals.format(post.createdDate, 'yy/MM/dd HH:mm')}" />
+                </attr>
+                <attr sel=".col-view" th:text="${post.hit}"/>
+                <attr sel=".col-rate" th:text="${post.rating}"/>
+            </attr>
+        </attr>
+    </attr>
+
+    <attr sel="form.form-inline.search-form.justify-content-end" th:action="@{'/'+${chanInfo.slug}}" th:method="'get'">
+        <attr sel="#search-type" th:replace="all-but-first">
+            <attr sel="option[0]" th:each="type : ${target}" th:value="${type.name}" th:selected="${(param.target != null && (param.target.toString == type.name)) || (param.target == null && typeStat.index == 0)}"  th:text="${type.description}" />
+        </attr>
+    </attr>
+
+    <attr sel="div.btns-board">
+        <attr sel="div.float-right">
+            <attr sel="a.btn-arca-article-write" th:href="@{'/'+${chanInfo.slug}+'/write'}"/>
+        </attr>
+        <attr sel="div.float-left">
+            <attr sel="a.float-left" th:href="@{'/'+${chanInfo.slug}}"/>
+
+        </attr>
+    </attr>
+
+    <attr sel="#search-type" th:remove="all-but-first">
+        <attr sel="option[0]" th:each="searchType : ${target}" th:value="${searchType.name}" th:selected="${param.searchType != null && (param.searchType.toString == searchType.name)}" th:text="${searchType.description}"/>
+    </attr>
+
+    <attr sel=".pagination-wrapper">
+        <attr sel=".pagination">
+            <attr sel="li[0]/a" th:class="'page-link' + (${posts.number <=0} ?' disabled':'')" th:text="'<'" th:href="@{${chanInfo.slug}(page=${posts.number -1},sort=${param.sort},target=${param.target},keyword=${param.keyword})}"/>
+            <attr sel="li[1]" th:class="'page-item' + (${pageNumber} == ${posts.number}?' active':'')" th:each="pageNumber : ${pageNumbers}">
+                <attr sel="a" th:text="${pageNumber + 1}" th:class="'page-link' + (${pageNumber} == ${posts.number}?' active':'')" th:href="@{${chanInfo.slug}(page=${pageNumber},sort=${param.sort},target=${param.target},keyword=${param.keyword})}"/>
+            </attr>
+            <attr sel="li[2]/a" th:text="'>'" th:class="'page-link' + (${posts.number} >= ${posts.totalPages - 1}?' disabled':'')" th:href="@{${chanInfo.slug}(page=${posts.number +1},sort=${param.sort},target=${param.target},keyword=${param.keyword})}"/>
+        </attr>
+    </attr>
+
+<!--    <attr sel="[name='sort']">-->
+<!--        <attr sel=""-->
+<!--    </attr>-->
+</thlogic>

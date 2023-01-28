@@ -19,18 +19,13 @@ public class Subscribe {
 
     @ManyToOne(optional = false)
     @Setter
-    @JoinColumn(name = "channelName")
+    @JoinColumn(name = "slug")
     private Channel channel;
 
     @ManyToOne(optional = false)
     @Setter
     @JoinColumn(name = "userId")
     private User user;
-
-    @CreatedDate
-    @Setter
-    @Column(nullable = false)
-    private LocalDateTime subStartDate;
 
     private Subscribe(Channel channel, User user) {
         this.channel = channel;

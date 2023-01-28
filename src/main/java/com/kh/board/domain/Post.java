@@ -21,7 +21,7 @@ public class Post extends AuditingTimeEntity{
 
     @ManyToOne(optional = false)
     @Setter
-    @JoinColumn(name = "channelName")
+    @JoinColumn(name = "slug")
     private Channel channel;
 
     @ManyToOne(optional = false)
@@ -29,9 +29,9 @@ public class Post extends AuditingTimeEntity{
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne(optional = true)
-    @Setter
-    private Category category;
+//    @OneToOne(optional = true, fetch = FetchType.EAGER)
+//    @Setter
+//    private Category category;
 
     @Setter
     @Column(nullable = false)
@@ -46,6 +46,11 @@ public class Post extends AuditingTimeEntity{
     @ColumnDefault("0")
     private Integer rating;
 
+    @Setter
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Integer hit;
+
     @OrderBy("createdDate desc")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @ToString.Exclude
@@ -57,20 +62,20 @@ public class Post extends AuditingTimeEntity{
         this.title = title;
         this.content = content;
     }
-    private Post(User user, Channel channel, Category category,String title, String content) {
-        this.user = user;
-        this.channel = channel;
-        this.category = category;
-        this.title = title;
-        this.content = content;
-    }
+//    private Post(User user, Channel channel, /*Category category,*/String title, String content) {
+//        this.user = user;
+//        this.channel = channel;
+////        this.category = category;
+//        this.title = title;
+//        this.content = content;
+//    }
 
     public static Post of(User user, Channel channel, String title, String content) {
         return new Post(user, channel, title, content);
     }
-    public static Post of(User user, Channel channel, Category category, String title, String content) {
-        return new Post(user, channel, category, title, content);
-    }
+//    public static Post of(User user, Channel channel, Category category, String title, String content) {
+//        return new Post(user, channel, category, title, content);
+//    }
 
     @Override
     public boolean equals(Object o) {

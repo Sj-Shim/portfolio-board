@@ -34,6 +34,8 @@ public class QChannel extends EntityPathBase<Channel> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedDate = _super.modifiedDate;
 
+    public final ListPath<Post, QPost> postList = this.<Post, QPost>createList("postList", Post.class, QPost.class, PathInits.DIRECT2);
+
     public final StringPath slug = createString("slug");
 
     public final NumberPath<Integer> subCount = createNumber("subCount", Integer.class);

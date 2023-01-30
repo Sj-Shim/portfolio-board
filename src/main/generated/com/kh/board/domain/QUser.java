@@ -22,7 +22,11 @@ public class QUser extends EntityPathBase<User> {
 
     public final QAuditingTimeEntity _super = new QAuditingTimeEntity(this);
 
+    public final ListPath<ChannelManager, QChannelManager> channelManagerList = this.<ChannelManager, QChannelManager>createList("channelManagerList", ChannelManager.class, QChannelManager.class, PathInits.DIRECT2);
+
     public final SetPath<ChannelManager, QChannelManager> channelManagers = this.<ChannelManager, QChannelManager>createSet("channelManagers", ChannelManager.class, QChannelManager.class, PathInits.DIRECT2);
+
+    public final ListPath<Comment, QComment> commentList = this.<Comment, QComment>createList("commentList", Comment.class, QComment.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
@@ -37,6 +41,8 @@ public class QUser extends EntityPathBase<User> {
     public final StringPath password = createString("password");
 
     public final NumberPath<Integer> point = createNumber("point", Integer.class);
+
+    public final ListPath<Post, QPost> postList = this.<Post, QPost>createList("postList", Post.class, QPost.class, PathInits.DIRECT2);
 
     public final ListPath<Subscribe, QSubscribe> subscribes = this.<Subscribe, QSubscribe>createList("subscribes", Subscribe.class, QSubscribe.class, PathInits.DIRECT2);
 

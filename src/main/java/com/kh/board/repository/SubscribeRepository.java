@@ -20,11 +20,11 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long>
 
 
     List<Subscribe> findByUser_UserId(String userId);
-    List<Subscribe> findByChannel_ChannelName(String channelName);
+    List<Subscribe> findByChannel_Slug(String slug);
 
-    Optional<Subscribe> findByUser_UserIdAndChannel_ChannelName(String userId, String channelName);
+    Optional<Subscribe> findByUser_UserIdAndChannel_Slug(String userId, String slug);
 
-    boolean existsByChannel_ChannelNameAndUser_UserId(String channelName, String userId);
+    boolean existsByChannel_SlugAndUser_UserId(String slug, String userId);
 
     @Override
     default void customize(QuerydslBindings bindings, QSubscribe root){

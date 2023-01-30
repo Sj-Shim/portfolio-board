@@ -22,6 +22,7 @@ public interface ChannelRepository extends JpaRepository<Channel, String>
     List<Channel> findAllByOrderBySubCountDesc();
 
     Optional<Channel> findByChannelNameEquals(String channelName);
+    Optional<Channel> findBySlug(String slug);
 
     Optional<Channel> findBySlugEquals(String slug);
     Optional<Channel> findBySlugContainingIgnoreCase(String slug);

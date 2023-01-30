@@ -1,19 +1,19 @@
 package com.kh.board.dto.request;
 
-import com.kh.board.domain.Category;
-import com.kh.board.dto.CategoryDto;
+import com.kh.board.domain.Post;
 import com.kh.board.dto.ChannelDto;
 import com.kh.board.dto.PostDto;
 import com.kh.board.dto.UserDto;
 
+import javax.validation.constraints.NotBlank;
+
 public record PostRequest(
-        String title,
-//        Integer categoryId,
-        String content
+        @NotBlank(message = "제목 입력") String title,
+        @NotBlank(message = "내용 입력") String content
 
 ) {
-   public static PostRequest of(String title, /*Integer categoryId,*/ String content) {
-       return new PostRequest(title, /*categoryId,*/ content);
+   public static PostRequest of(String title, String content) {
+       return new PostRequest(title, content);
    }
 
    public PostDto toDto(UserDto userDto) {
@@ -24,5 +24,9 @@ public record PostRequest(
                this.title,
                this.content
        );
+   }
+
+   public Post toEntity(){
+       return Post.builder().title(title).content(content).build();
    }
 }

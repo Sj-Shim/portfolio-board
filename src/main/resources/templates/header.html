@@ -29,7 +29,8 @@
             <li class="dropdown-item">구독중인 채널이 없습니다.</li>
           </ul>
           <ul class="dropdown-menu" sec:authorize="isAuthenticated()" >
-            <li th:each="sub : ${subList}"><a th:data-sublist="${sub.channel.slug}" class="dropdown-item" th:href="@{'/'+${sub.channel.slug}}" th:text="${sub.channel.channelName}"></a></li>
+            <li th:if="${subList.isEmpty()}" th:class="dropdown-item" th:text="'구독중인 채널이 없습니다.'"></li>
+            <li th:each="sub : ${subList}"><a th:data-sublist="${sub.channelDto.slug}" class="dropdown-item" th:href="@{'/'+${sub.channelDto.slug}}" th:text="${sub.channelDto.channelName}"></a></li>
           </ul>
         </li>
         <li class="nav-item">

@@ -1,5 +1,6 @@
 package com.kh.board.dto.request;
 
+import com.kh.board.domain.Channel;
 import com.kh.board.dto.ChannelDto;
 
 public record ChannelRequest(
@@ -13,5 +14,9 @@ public record ChannelRequest(
 
     public ChannelDto toDto() {
         return ChannelDto.of(this.channelName, this.description, this.slug);
+    }
+
+    public Channel toEntity(){
+        return Channel.of(channelName, description, slug);
     }
 }

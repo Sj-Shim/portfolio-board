@@ -1,20 +1,25 @@
 package com.kh.board.domain;
 
+import com.kh.board.domain.Subscribe;
+import com.kh.board.domain.Channel;
+import com.kh.board.domain.Post;
+import com.kh.board.domain.ChannelManager;
+import com.kh.board.domain.Comment;
+
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.*;
 
+@Table(name = "USER")
 @Entity
 @Getter
-@ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends AuditingTimeEntity{
+public class User extends AuditingTimeEntity implements Serializable {
     @Id @Column(length = 20, updatable = false)
     private String userId;
 
@@ -35,13 +40,22 @@ public class User extends AuditingTimeEntity{
     @Setter
     private Integer point;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @ToString.Exclude
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Subscribe> subscribes;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @ToString.Exclude
     private Set<ChannelManager> channelManagers = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> postList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChannelManager> channelManagerList = new ArrayList<>();
 
     private User(String userId, String password, String email, String nickname) {
         this.userId = userId;
@@ -49,19 +63,9 @@ public class User extends AuditingTimeEntity{
         this.email = email;
         this.nickname = nickname;
     }
-    private User(String userId, String password, String email, String nickname, int point) {
-        this.userId = userId;
-        this.password = password;
-        this.email = email;
-        this.nickname = nickname;
-        this.point = point;
-    }
 
     public static User of(String userId, String password, String email, String nickname) {
         return new User(userId, password, email, nickname);
-    }
-    public static User of(String userId, String password, String email, String nickname, int point) {
-        return new User(userId, password, email, nickname, point);
     }
 
     @Override
@@ -75,5 +79,42 @@ public class User extends AuditingTimeEntity{
     @Override
     public int hashCode() {
         return Objects.hash(userId);
+    }
+
+    public void addPost(Post post) {
+        postList.add(post);
+    }
+    public void addComment(Comment comment){
+        commentList.add(comment);
+    }
+
+    public void updatePassword(PasswordEncoder passwordEncoder, String password) {
+        this.password = passwordEncoder.encode(password);
+    }
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+    public void encodePassword(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(password);
+    }
+
+    public boolean matchPassword(PasswordEncoder passwordEncoder, String checkPassword) {
+        return passwordEncoder.matches(checkPassword, getPassword());
+    }
+
+
+    public void addChannelManager(ChannelManager channelManager) {
+        channelManagerList.add(channelManager);
+    }
+
+    public void removeSubscribe(Subscribe subscribe) {
+        subscribes.remove(subscribe);
+    }
+
+    public void addSubscribe(Subscribe subscribe) {
+        subscribes.add(subscribe);
     }
 }

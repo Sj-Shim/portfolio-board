@@ -14,10 +14,11 @@ import java.util.stream.Collectors;
 /**
  * A DTO for the {@link Channel} entity
  */
-public record ChannelDto(String channelName
+public record ChannelDto(
+        String channelName
         , String description
         , String slug
-        , Set<SubscribeDto> subscribeDtos
+        , Integer subCount
         , Set<ChannelManagerDto> channelManagerDtos
         , LocalDateTime createdDate
         , LocalDateTime modifiedDate) implements Serializable, Comparable<ChannelDto> {
@@ -25,19 +26,19 @@ public record ChannelDto(String channelName
     public static ChannelDto of(String channelName
             , String description
             , String slug
-            , Set<SubscribeDto> subscribeDtos
+            , Integer subCount
             , Set<ChannelManagerDto> channelManagerDtos
             , LocalDateTime createdDate
             , LocalDateTime modifiedDate) {
-        return new ChannelDto(channelName, description, slug, subscribeDtos, channelManagerDtos, createdDate, modifiedDate);
+        return new ChannelDto(channelName, description, slug, subCount, channelManagerDtos, createdDate, modifiedDate);
     }
 
     public static ChannelDto of(String channelName
             , String description
             , String slug
-            , Set<SubscribeDto> subscribeDtos
+            , Integer subCount
             , Set<ChannelManagerDto> channelManagerDtos) {
-        return new ChannelDto(channelName, description, slug, subscribeDtos, channelManagerDtos,null, null);
+        return new ChannelDto(channelName, description, slug, subCount, channelManagerDtos,null, null);
     }
 
     public static ChannelDto of(String channelName
@@ -47,26 +48,30 @@ public record ChannelDto(String channelName
     }
 
     public static ChannelDto from(Channel channel) {
-        return new ChannelDto(channel.getChannelName(), channel.getDescription(), channel.getSlug(), ChannelDto.from(channel.getSubscribes()), channel.getChannelManagers().stream().map(ChannelManagerDto::from).collect(Collectors.toCollection(LinkedHashSet::new)), channel.getCreatedDate(), channel.getModifiedDate());
-    }
-    public static ChannelDto from2(Channel channel) {
-        return new ChannelDto(channel.getChannelName(), channel.getDescription(), channel.getSlug(), ChannelDto.from(channel.getSubscribes()), channel.getChannelManagers().stream().map(e->ChannelManagerDto.of(e.getChannel().getChannelName(),UserDto.of(e.getUser().getUserId(),e.getUser().getPassword(),e.getUser().getEmail(),e.getUser().getNickname()),null)).collect(Collectors.toCollection(LinkedHashSet::new)), channel.getCreatedDate(), channel.getModifiedDate());
+        return new ChannelDto(
+                channel.getChannelName()
+                , channel.getDescription()
+                , channel.getSlug()
+                , channel.getSubscribes().size()
+                , channel.getChannelManagers().stream().map(ChannelManagerDto::from).collect(Collectors.toCollection(LinkedHashSet::new))
+                , channel.getCreatedDate()
+                , channel.getModifiedDate());
     }
 
     public Channel toEntity() {
-        return Channel.of(this.channelName, this.description, this.slug, this.subscribeDtos.size());
+        return Channel.of(this.channelName, this.description, this.slug, this.subCount);
     }
 
-    public static Set<SubscribeDto> from(Set<Subscribe> subscribes) {
+    public static Set<SubscribeDto> setFrom(Set<Subscribe> subscribes) {
         return subscribes.stream().map(SubscribeDto::from).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
 
     @Override
     public int compareTo(ChannelDto o) {
-        if(o.subscribeDtos.size() < subscribeDtos.size()){
+        if(o.subCount < subCount){
             return 1;
-        } else if (o.subscribeDtos.size() > subscribeDtos.size()) {
+        } else if (o.subCount > subCount) {
             return -1;
         }
         return 0;

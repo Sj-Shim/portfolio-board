@@ -5,9 +5,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -19,14 +17,14 @@ public class Post extends AuditingTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @Setter
-    @JoinColumn(name = "slug")
+    @JoinColumn(name = "channel_slug")
     private Channel channel;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @Setter
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_userId")
     private User user;
 
 //    @OneToOne(optional = true, fetch = FetchType.EAGER)
@@ -51,10 +49,14 @@ public class Post extends AuditingTimeEntity{
     @ColumnDefault("0")
     private Integer hit;
 
-    @OrderBy("createdDate desc")
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    @ToString.Exclude
-    private final Set<Comment> comments = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
+
+    @Builder
+    private Post(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 
     private Post(User user, Channel channel, String title, String content) {
         this.user = user;
@@ -88,5 +90,24 @@ public class Post extends AuditingTimeEntity{
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void confirmUser(User user) {
+        this.user = user;
+        user.addPost(this);
+    }
+    public void confirmChannel(Channel channel) {
+        this.channel = channel;
+        channel.addPost(this);
+    }
+    public void addComment(Comment comment) {
+        commentList.add(comment);
+    }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+    public void updateContent(String content) {
+        this.content = content;
     }
 }

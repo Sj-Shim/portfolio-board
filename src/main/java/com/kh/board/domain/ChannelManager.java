@@ -18,12 +18,12 @@ public class ChannelManager {
 
     @ManyToOne(optional = false)
     @Setter
-    @JoinColumn(name = "slug")
+    @JoinColumn(name = "channel_slug")
     private Channel channel;
 
     @ManyToOne(optional = false)
     @Setter
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_userId")
     private User user;
 
     @Setter
@@ -52,5 +52,15 @@ public class ChannelManager {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void confirmUser(User user) {
+        this.user = user;
+        user.addChannelManager(this);
+    }
+
+    public void confirmChannel(Channel channel) {
+        this.channel = channel;
+        channel.addManager(this);
     }
 }

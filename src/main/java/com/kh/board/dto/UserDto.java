@@ -17,7 +17,6 @@ public record UserDto(String userId
         , String email
         , String nickname
         , Integer point
-        , List<SubscribeDto> subscribeDtos
         , LocalDateTime createdDate
         , LocalDateTime modifiedDate) implements Serializable {
 
@@ -26,20 +25,8 @@ public record UserDto(String userId
             , String password
             , String email
             , String nickname
-            , Integer point
-            , List<SubscribeDto> subscribeDtos
-            , LocalDateTime createdDate
-            , LocalDateTime modifiedDate
-    ){
-        return new UserDto(userId, password, email, nickname, point, subscribeDtos, createdDate, modifiedDate);
-    }
-    public static UserDto of(
-            String userId
-            , String password
-            , String email
-            , String nickname
             , Integer point){
-        return new UserDto(userId, password, email, nickname, point, null, null, null);
+        return new UserDto(userId, password, email, nickname, point, null, null);
     }
     public static UserDto of(
             String userId
@@ -50,16 +37,7 @@ public record UserDto(String userId
             , LocalDateTime createdDate
             , LocalDateTime modifiedDate
     ){
-        return new UserDto(userId, password, email, nickname, point, null, createdDate, modifiedDate);
-    }
-    public static UserDto of(
-            String userId
-            , String password
-            , String email
-            , String nickname
-            , List<SubscribeDto> subscribeDtos
-    ){
-        return new UserDto(userId, password, email, nickname, null, subscribeDtos,null, null);
+        return new UserDto(userId, password, email, nickname, point, createdDate, modifiedDate);
     }
     public static UserDto of(
             String userId
@@ -67,11 +45,11 @@ public record UserDto(String userId
             , String email
             , String nickname
     ){
-        return new UserDto(userId, password, email, nickname, null, null,null, null);
+        return new UserDto(userId, password, email, nickname, null,null, null);
     }
 
     public static UserDto from(User user) {
-        return new UserDto(user.getUserId(), user.getPassword(), user.getEmail(), user.getNickname(), user.getPoint(), UserDto.from(user.getSubscribes()), user.getCreatedDate(), user.getModifiedDate());
+        return new UserDto(user.getUserId(), user.getPassword(), user.getEmail(), user.getNickname(), user.getPoint(), user.getCreatedDate(), user.getModifiedDate());
     }
 
     public User toEntity() {
@@ -79,7 +57,7 @@ public record UserDto(String userId
     }
 
 
-    public static List<SubscribeDto> from(List<Subscribe> subscribes) {
+    public static List<SubscribeDto> subListfrom(List<Subscribe> subscribes) {
         return subscribes.stream().map(SubscribeDto::from).collect(Collectors.toList());
     }
 }

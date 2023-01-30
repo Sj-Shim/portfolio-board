@@ -1,14 +1,14 @@
 package com.kh.board.dto.request;
 
+import java.util.Optional;
+
 public record UpdateUserRequest(
-        String password,
-        String email,
-        String nickname
+        Optional<String> email,
+        Optional<String> nickname
 ) {
 
-    public static UpdateUserRequest of(String password,
-                                       String email,
-                                       String nickname){
-        return new UpdateUserRequest(password, email, nickname);
+    public static UpdateUserRequest of(Optional<String> email,
+                                       Optional<String> nickname){
+        return new UpdateUserRequest(email, nickname);
     }
 }

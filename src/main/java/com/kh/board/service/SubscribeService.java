@@ -6,15 +6,21 @@ import com.kh.board.domain.User;
 import com.kh.board.dto.ChannelDto;
 import com.kh.board.dto.SubscribeDto;
 import com.kh.board.dto.request.SubscribeRequest;
+import com.kh.board.exception.ChannelException;
+import com.kh.board.exception.ChannelExceptionType;
+import com.kh.board.exception.UserException;
+import com.kh.board.exception.UserExceptionType;
 import com.kh.board.repository.ChannelRepository;
 import com.kh.board.repository.SubscribeRepository;
 import com.kh.board.repository.UserRepository;
+import com.kh.board.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,13 +33,16 @@ public class SubscribeService {
     @Autowired private UserRepository userRepository;
     @Autowired private ChannelRepository channelRepository;
 
-    public void addSubscribe(SubscribeRequest request) {
-        Subscribe subscribe = Subscribe.of(channelRepository.getReferenceById(request.channelName()), userRepository.getReferenceById(request.userId()));
-        subscribeRepository.save(subscribe);
+    public void addSubscribe(String slug) {
+       Channel channel = channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND));
+       User user = userRepository.findById(SecurityUtil.getLoginUsername()).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER));
+       Subscribe subscribe = Subscribe.of(channel, user);
+       subscribeRepository.save(subscribe);
+       user.addSubscribe(subscribe);
     }
 
-    public boolean checkSubscribe(String slug, String userId) {
-        return subscribeRepository.existsByChannel_ChannelNameAndUser_UserId(slug, userId);
+    public boolean checkSubscribe(String slug) {
+        return subscribeRepository.existsByChannel_SlugAndUser_UserId(slug, SecurityUtil.getLoginUsername());
     }
 
     public List<SubscribeDto> getUserSubscribes(String userId){
@@ -42,13 +51,20 @@ public class SubscribeService {
     }
     public List<Subscribe> getFullInfoSubs(String userId) {
         List<SubscribeDto> el = getUserSubscribes(userId);
-        return el.stream().map(e -> new SubscribeDto(e.id(),e.slug(),e.userId()).toEntity(channelRepository, userRepository)).collect(Collectors.toList());
+        return el.stream().map(e -> new SubscribeDto(e.id(),e.channelDto(),e.userDto()).toEntity(channelRepository, userRepository)).collect(Collectors.toList());
     }
 
-    public void deleteSubscribe(String userId, String channelName){
-        Subscribe subscribe = subscribeRepository.findByUser_UserIdAndChannel_ChannelName(userId, channelName).orElse(null);
+    public boolean checkChanSub(String slug){
+        return subscribeRepository.existsByChannel_SlugAndUser_UserId(slug, SecurityUtil.getLoginUsername());
+    }
+    public void deleteSubscribe(String slug){
+        User user = userRepository.findById(SecurityUtil.getLoginUsername()).orElseThrow(() -> new  UserException(UserExceptionType.NOT_FOUND_MEMBER));
+        Channel channel = channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND));
+        Subscribe subscribe = subscribeRepository.findByUser_UserIdAndChannel_Slug(SecurityUtil.getLoginUsername(), slug).orElseThrow(() -> new EntityNotFoundException("해당 구독 내역이 없음. id : slug = " + SecurityUtil.getLoginUsername() + " : " + slug));
         if (subscribe!=null){
             subscribeRepository.delete(subscribe);
+            user.removeSubscribe(subscribe);
+            channel.removeSubscribe(subscribe);
         }
     }
 }

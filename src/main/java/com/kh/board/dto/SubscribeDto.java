@@ -1,6 +1,10 @@
 package com.kh.board.dto;
 
 import com.kh.board.domain.Subscribe;
+import com.kh.board.exception.ChannelException;
+import com.kh.board.exception.ChannelExceptionType;
+import com.kh.board.exception.UserException;
+import com.kh.board.exception.UserExceptionType;
 import com.kh.board.repository.ChannelRepository;
 import com.kh.board.repository.UserRepository;
 import lombok.Setter;
@@ -14,21 +18,21 @@ import java.time.LocalDateTime;
  */
 
 public record SubscribeDto(Long id
-        , String slug
-        , String userId) implements Serializable {
+        , ChannelDto channelDto
+        , UserDto userDto) implements Serializable {
     public static SubscribeDto of(Long id
-            , String slug
-            , String userId) {
-        return new SubscribeDto(id, slug, userId);
+            , ChannelDto channelDto
+            , UserDto userDto) {
+        return new SubscribeDto(id, channelDto, userDto);
     }
 
 
     public static SubscribeDto from(Subscribe subscribe) {
-        return new SubscribeDto(subscribe.getId(), subscribe.getChannel().getSlug(),subscribe.getUser().getUserId());
+        return new SubscribeDto(subscribe.getId(), ChannelDto.from(subscribe.getChannel()), UserDto.from(subscribe.getUser()));
     }
 
 
     public Subscribe toEntity(ChannelRepository channelRepository, UserRepository userRepository) {
-        return Subscribe.of(channelRepository.findById(slug).orElseThrow(()-> new EntityNotFoundException("채널을 찾지 못했습니다.")), userRepository.getReferenceById(userId));
+        return Subscribe.of(channelRepository.findById(channelDto.slug()).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND)), userRepository.findById(userDto.userId()).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER)));
     }
 }

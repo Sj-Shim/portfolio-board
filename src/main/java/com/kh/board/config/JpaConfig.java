@@ -15,11 +15,23 @@ import java.util.Optional;
 public class JpaConfig {
     @Bean
     public AuditorAware<String> auditorAware() {
+
+//        return () -> Optional.ofNullable(SecurityContextHolder.getContext())
+//                .map(SecurityContext::getAuthentication)
+//                .filter(Authentication::isAuthenticated)
+//                .map(Authentication::getPrincipal)
+//                .map(BoardPrincipal.class::cast)
+//                .map(BoardPrincipal::getUsername);
         return () -> Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .filter(Authentication::isAuthenticated)
                 .map(Authentication::getPrincipal)
-                .map(BoardPrincipal.class::cast)
-                .map(BoardPrincipal::getUsername);
+                .map(principal -> {
+                    if(principal instanceof BoardPrincipal){
+                        return ((BoardPrincipal) principal).getUsername();
+                    } else {
+                        return null;
+                    }
+                });
     }
 }

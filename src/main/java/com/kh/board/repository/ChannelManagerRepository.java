@@ -17,7 +17,7 @@ public interface ChannelManagerRepository extends JpaRepository<ChannelManager, 
                     , QuerydslPredicateExecutor<ChannelManager>
                     , QuerydslBinderCustomizer<QChannelManager> {
 
-    List<ChannelManager> findByChannel_ChannelName(String channelName);
+    List<ChannelManager> findByChannel_Slug(String slug);
 
     @Override
     default void customize(QuerydslBindings bindings, QChannelManager root){

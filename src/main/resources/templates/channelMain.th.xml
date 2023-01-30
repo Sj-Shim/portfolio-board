@@ -11,12 +11,12 @@
             <attr sel="span" th:title="${chanInfo.channelName}+' 채널'" th:text="${chanInfo.channelName}+' 채널'"/>
         </attr>
         <attr sel=".buttons">
-            <attr sel=".subscribe-btn" th:href="@{'/'+${chanInfo.slug}+'/subscribe'}" th:data-chan="${chanInfo.channelName}" />
+            <attr sel=".subscribe-btn" th:href="@{'/'+${chanInfo.slug}+'/subscribe'}" th:data-chan="${chanInfo.channelName}" th:class="'btn btn-sm subscribe-btn' + (${subCheck} ? ' active' : '')"/>
         </attr>
     </attr>
     <attr sel=".description">
         <attr sel="div[0]">
-            <attr sel="#subCount" th:text="'구독자 '+ ${chanInfo.subscribeDtos.size()}+'명'"/>
+            <attr sel="#subCount" th:text="'구독자 '+ ${chanInfo.subCount}+'명'"/>
             <attr sel=".user-info">
                 <attr sel="span" th:text="'관리자 '+${chanInfo.channelManagerDtos()[0].user().nickname}"/>
             </attr>
@@ -38,13 +38,13 @@
 
     <attr sel="div.article-list">
         <attr sel="div.list-table">
-            <attr sel="a" th:href="@{'/'+${chanInfo.slug}+'/'+${post.id}+'?p='+${posts.number}}" th:class="'vrow column'" th:each="post :${posts}">
+            <attr sel="a" th:href="@{${chanInfo.slug  +'/post/'+ post.id}(page=${posts.number})}" th:class="'vrow column'" th:each="post :${posts}">
                 <attr sel=".col-id" th:text="${post.id}"/>
                 <attr sel=".col-title">
                     <attr sel=".title" th:text="${post.title}"/>
                 </attr>
                 <attr sel=".col-author">
-                    <attr sel="span" th:data-filter="${post.nickname}" th:text="${post.nickname}"/>
+                    <attr sel="span" th:data-filter="${post.userDto.nickname}" th:text="${post.userDto.nickname}"/>
                 </attr>
                 <attr sel=".col-time">
                     <attr sel="time" th:datetime="${post.createdDate}" data-format="Q" th:text="${#temporals.format(post.createdDate, 'yy/MM/dd HH:mm')}" />

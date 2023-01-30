@@ -1,12 +1,18 @@
 package com.kh.board.service;
 
+import com.kh.board.domain.Channel;
 import com.kh.board.domain.ChannelManager;
 import com.kh.board.domain.ManagerLevel;
 import com.kh.board.domain.User;
 import com.kh.board.dto.ChannelManagerDto;
+import com.kh.board.exception.ChannelException;
+import com.kh.board.exception.ChannelExceptionType;
+import com.kh.board.exception.UserException;
+import com.kh.board.exception.UserExceptionType;
 import com.kh.board.repository.ChannelManagerRepository;
 import com.kh.board.repository.ChannelRepository;
 import com.kh.board.repository.UserRepository;
+import com.kh.board.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +32,15 @@ public class ChannelManagerService {
     @Autowired private UserRepository userRepository;
     @Autowired private ChannelRepository channelRepository;
 
-    public void addChannelManager(String managerId, String userId, String channelName) {
+    public void addChannelManager(String userId, String slug) {
         try {
-            List<ChannelManager> channelManager = channelManagerRepository.findByChannel_ChannelName(channelName);
+            Channel channel = channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND));
+
+            List<ChannelManager> channelManager = channelManagerRepository.findByChannel_Slug(slug);
             for (ChannelManager cm : channelManager) {
-                if (cm.getManagerLevel().equals(ManagerLevel.PRIME) && cm.getUser().getUserId().equals(managerId)) {
-                    ChannelManager newManager = ChannelManager.of(channelRepository.getReferenceById(channelName), userRepository.getReferenceById(userId), ManagerLevel.VICE);
+                if (cm.getManagerLevel().equals(ManagerLevel.PRIME) && cm.getUser().getUserId().equals(SecurityUtil.getLoginUsername())) {
+                    ChannelManager newManager = ChannelManager.of(channel, userRepository.findByUserId(userId).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER)), ManagerLevel.VICE);
+                    channel.addManager(newManager);
                     channelManagerRepository.save(newManager);
                 }
             }
@@ -40,18 +49,20 @@ public class ChannelManagerService {
         }
     }
 
-    public List<ChannelManagerDto> getChannelManagers(String channelName) {
-        return ChannelManagerDto.from(channelManagerRepository.findByChannel_ChannelName(channelName));
+    public List<ChannelManagerDto> getChannelManagers(String slug) {
+        return ChannelManagerDto.from(channelManagerRepository.findByChannel_Slug(slug));
     }
 
-    public void dropChannelManager(String managerId, String userId, String channelName) {
+    public void dropChannelManager(String userId, String slug) {
         try {
-            List<ChannelManager> channelManagers = channelManagerRepository.findByChannel_ChannelName(channelName);
+            Channel channel = channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND));
+            List<ChannelManager> channelManagers = channelManagerRepository.findByChannel_Slug(slug);
             for(ChannelManager cm : channelManagers) {
-                if(cm.getManagerLevel().equals(ManagerLevel.PRIME) && cm.getUser().getUserId().equals(managerId)){
+                if(cm.getManagerLevel().equals(ManagerLevel.PRIME) && cm.getUser().getUserId().equals(SecurityUtil.getLoginUsername())){
                     for (ChannelManager cm2 : channelManagers){
                         if (cm2.getUser().getUserId().equals(userId)){
                             channelManagerRepository.delete(cm2);
+                            channel.removeManager(cm2);
                         }
                     }
                 }

@@ -1,18 +1,16 @@
 package com.kh.board.dto.request;
 
+import com.kh.board.domain.Subscribe;
 import com.kh.board.dto.ChannelDto;
 import com.kh.board.dto.SubscribeDto;
 import com.kh.board.dto.UserDto;
 
 public record SubscribeRequest(
-        String channelName,
+        String slug,
         String userId
 ) {
-    public static SubscribeRequest of(String channelName, String userId) {
-        return new SubscribeRequest(channelName, userId);
+    public static SubscribeRequest of(String slug, String userId) {
+        return new SubscribeRequest(slug, userId);
     }
 
-//    public SubscribeDto toDto() {
-//        return SubscribeDto.of(null, channelName, userId,  null);
-//    }
 }

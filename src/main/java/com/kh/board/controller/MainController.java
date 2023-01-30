@@ -41,7 +41,7 @@ public class MainController {
     public String index(@AuthenticationPrincipal BoardPrincipal user, Model m) {
         if(user!=null){
             UserDto userInfo = userService.getUser(user.nickname());
-            List<Subscribe> subInfo = subscribeService.getFullInfoSubs(user.getUsername());
+            List<SubscribeDto> subInfo = subscribeService.getUserSubscribes(user.getUsername());
             m.addAttribute("userInfo", userInfo);
             m.addAttribute("subList", subInfo);
         }

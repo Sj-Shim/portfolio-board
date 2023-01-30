@@ -5,9 +5,7 @@ import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -36,9 +34,20 @@ public class Channel extends AuditingTimeEntity{
     @ToString.Exclude
     private final Set<ChannelManager> channelManagers = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> postList = new ArrayList<>();
+
 
     @Setter
     private Integer subCount = subscribes.size();
+
+
+    private Channel(String channelName, String description, String slug) {
+        this.channelName = channelName;
+        this.description = description;
+        this.slug = slug;
+    }
+
 
     private Channel(String channelName, String description, String slug, Integer subCount) {
         this.channelName = channelName;
@@ -47,9 +56,13 @@ public class Channel extends AuditingTimeEntity{
         this.subCount = subCount;
     }
 
-    public static Channel of(String channelName, String description, String slug) {
-        return new Channel(channelName, description, slug, null);
+    public static Channel of(String channelName, String description, String slug){
+        return new Channel(channelName, description, slug);
     }
+
+//    public static Channel of(String channelName, String description, String slug) {
+//        return new Channel(channelName, description, slug, null);
+//    }
     public static Channel of(String channelName, String description, String slug, Integer subCount) {
         return new Channel(channelName, description, slug, subCount);
     }
@@ -65,5 +78,24 @@ public class Channel extends AuditingTimeEntity{
     @Override
     public int hashCode() {
         return Objects.hash(channelName);
+    }
+
+    public void addPost(Post post) {
+        postList.add(post);
+    }
+
+    public void addManager(ChannelManager channelManager) {
+        channelManagers.add(channelManager);
+    }
+
+    public void removeManager(ChannelManager channelManager){
+        channelManagers.remove(channelManager);
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+    public void removeSubscribe(Subscribe subscribe) {
+        subscribes.remove(subscribe);
     }
 }

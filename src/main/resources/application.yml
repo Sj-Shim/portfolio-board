@@ -1,6 +1,4 @@
 
-
-
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/project_board
@@ -20,7 +18,6 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
 
-
   h2:
     console:
       enabled: false
@@ -35,6 +32,9 @@ spring:
 
   thymeleaf3:
     decoupled-logic: true
+  mvc:
+    favicon:
+      enabled: false
 
 logging:
   level:

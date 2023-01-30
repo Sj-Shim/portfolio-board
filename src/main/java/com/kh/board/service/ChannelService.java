@@ -1,17 +1,20 @@
 package com.kh.board.service;
 
-import com.kh.board.domain.Channel;
-import com.kh.board.domain.ChannelManager;
-import com.kh.board.domain.Subscribe;
-import com.kh.board.domain.User;
+import com.kh.board.domain.*;
 import com.kh.board.dto.ChannelDto;
 import com.kh.board.dto.SubscribeDto;
 import com.kh.board.dto.UserDto;
 import com.kh.board.dto.request.ChannelRequest;
+import com.kh.board.dto.request.ChannelUpdateDto;
+import com.kh.board.exception.ChannelException;
+import com.kh.board.exception.ChannelExceptionType;
+import com.kh.board.exception.UserException;
+import com.kh.board.exception.UserExceptionType;
 import com.kh.board.repository.ChannelManagerRepository;
 import com.kh.board.repository.ChannelRepository;
 import com.kh.board.repository.SubscribeRepository;
 import com.kh.board.repository.UserRepository;
+import com.kh.board.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.OrderBy;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,46 +47,51 @@ public class ChannelService {
         return ChannelDto.from(channelRepository.findBySlugEquals(slug).orElseThrow(()->new EntityNotFoundException("일치하는 채널이 없습니다.getChannelBySlug : "+slug)));
     }
 
-
-    public List<Channel> getFullInfoChan() {
-        List<ChannelDto> el = getChannelList();
-        return el.stream().map(e -> new ChannelDto(e.channelName(),e.description(),e.slug(),e.subscribeDtos(),e.channelManagerDtos(), e.createdDate(),e.modifiedDate()).toEntity()).collect(Collectors.toList());
-    }
     public void createChannel(ChannelRequest channelRequest) {
-        Channel channel = Channel.of(channelRequest.channelName(), channelRequest.description(), channelRequest.slug());
-        channel = channelRepository.save(channel);
+
+        Channel channel = channelRequest.toEntity();
+        ChannelManager channelManager = ChannelManager.of(channel, userRepository.findByUserId(SecurityUtil.getLoginUsername()).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER)), ManagerLevel.PRIME);
+        channel.addManager(channelManager);
+        channelRepository.save(channel);
     }
 
-    public ChannelDto getChannel(String channelName) {
-        Channel channel = channelRepository.findById(channelName).orElse(null);
+
+    public ChannelDto getChannel(String slug) {
+        Channel channel = channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND));
         ChannelDto channelDto = ChannelDto.from(channel);
         return channelDto;
     }
 
-    public void updateChannel(String channelName, String description, UserDto userDto) {
+    public void updateChannel(String slug, ChannelUpdateDto channelUpdateDto) {
         try{
-            Channel channel = channelRepository.getReferenceById(channelName);
-            User user = userRepository.getReferenceById(userDto.userId());
-            List<ChannelManager> channelManagers = channelManagerRepository.findByChannel_ChannelName(channelName);
-            for (ChannelManager channelManager : channelManagers) {
-                if(channelManager.getUser().getUserId().equals(user.getUserId())){
-                    channel.setDescription(description);
+
+            Channel channel = channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND));
+            Set<ChannelManager> channelManagers = channel.getChannelManagers();
+            for (ChannelManager manager : channelManagers){
+                if(manager.getUser().getUserId().equals(SecurityUtil.getLoginUsername()) && manager.getChannel().equals(channel)){
+                    channelUpdateDto.description().ifPresent(channel::updateDescription);
                 }
             }
 
-        }catch (EntityNotFoundException e) {
-            log.warn("채널을 찾을 수 없습니다.");
+        }catch (ChannelException e) {
+            log.warn(ChannelExceptionType.NOT_AUTHORITY_UPDATE_CHANNEL.getErrorMessage());
         }
     }
 
-    public Integer getSubscribeCount(String channelName) {
-        return subscribeRepository.findByChannel_ChannelName(channelName).size();
+    public Integer getSubscribeCount(String slug) {
+        return subscribeRepository.findByChannel_Slug(slug).size();
     }
 
-    public void deleteChannel(String channelName){
+    public void deleteChannel(String slug){
         try {
-            Channel channel = channelRepository.getReferenceById(channelName);
-            channelRepository.delete(channel);
+            Channel channel = channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND));
+            Set<ChannelManager> channelManagers = channel.getChannelManagers();
+            for (ChannelManager manager : channelManagers){
+                if(manager.getUser().getUserId().equals(SecurityUtil.getLoginUsername()) && manager.getChannel().equals(channel) && manager.getManagerLevel().getName().equals("관리자")){
+                    channelRepository.delete(channel);
+                }
+            }
+
         }catch (Exception e) {
             log.warn("채널을 삭제하지 못했습니다.");
         }

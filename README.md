@@ -15,7 +15,8 @@
  - MySQL Driver
  - Lombok
  - Spring Boot DevTools
+ 
  그 외
  - QueryDSL 5.0.0
- - 
+ - BootStrap 5.2.0
  

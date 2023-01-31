@@ -28,18 +28,23 @@ import java.util.Collection;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig{
+public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        String[] staticResources = {
+          "/css/**",
+          "/assets/**",
+          "/js/**"
+        };
 
         return http
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                .mvcMatchers(HttpMethod.GET,"/", "/{slug}", "/{slug}/post/{postId}")
+                        auth.requestMatchers(PathRequest.toStaticResources().atCommonLocations() ).permitAll()
+                                .mvcMatchers(HttpMethod.GET,"/", "/signup", "/{slug}", "/{slug}/post/{postId}")
                                 .permitAll()
                                 .anyRequest().authenticated())
-                .formLogin().and()
+                .formLogin().and().cors().and().csrf().disable()
                 .logout()
                 .logoutSuccessUrl("/")
                 .and().build();
@@ -48,7 +53,7 @@ public class SecurityConfig{
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return username -> userRepository
-                .findByUserId(username)
+                .findById(username)
                 .map(UserDto::from)
                 .map(BoardPrincipal::from)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. 사용자 이름 : " + username));

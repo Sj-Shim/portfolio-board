@@ -1,0 +1,176 @@
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+.body .board-article>div {
+    padding-right: 1rem;
+}
+@media screen and (max-width: 575px){
+    .body .board-article>div {
+        padding-left: 1rem;
+    }
+}
+.col-xl, .col-xl-auto, .col-xl-12, .col-xl-11, .col-xl-10, .col-xl-9, .col-xl-8, .col-xl-7, .col-xl-6, .col-xl-5, .col-xl-4, .col-xl-3, .col-xl-2, .col-xl-1, .col-lg, .col-lg-auto, .col-lg-12, .col-lg-11, .col-lg-10, .col-lg-9, .col-lg-8, .col-lg-7, .col-lg-6, .col-lg-5, .col-lg-4, .col-lg-3, .col-lg-2, .col-lg-1, .col-md, .col-md-auto, .col-md-12, .col-md-11, .col-md-10, .col-md-9, .col-md-8, .col-md-7, .col-md-6, .col-md-5, .col-md-4, .col-md-3, .col-md-2, .col-md-1, .col-sm, .col-sm-auto, .col-sm-12, .col-sm-11, .col-sm-10, .col-sm-9, .col-sm-8, .col-sm-7, .col-sm-6, .col-sm-5, .col-sm-4, .col-sm-3, .col-sm-2, .col-sm-1, .col-xs, .col-xs-auto, .col-xs-12, .col-xs-11, .col-xs-10, .col-xs-9, .col-xs-8, .col-xs-7, .col-xs-6, .col-xs-5, .col-xs-4, .col-xs-3, .col-xs-2, .col-xs-1, .col, .col-auto, .col-12, .col-11, .col-10, .col-9, .col-8, .col-7, .col-6, .col-5, .col-4, .col-3, .col-2, .col-1 {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0;
+}
+.body .card {
+    border: 1px solid;
+    border-color: #bbb;
+    border-color: var(--color-border-outer);
+    padding: 1rem;
+    border-radius: 6px;
+}
+.body .dialog {
+    margin: 2rem 0;
+    background-color: #fff;
+    background-color: var(--color-bg-dialog);
+}
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: .5rem;
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    margin-bottom: .5rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+h4, .h4 {
+    font-size: 1.5rem;
+}
+.card-title {
+    margin-bottom: .75rem;
+}
+h6, .h6 {
+    font-size: 1rem;
+}
+.card-subtitle {
+    margin-top: -.375rem;
+    margin-bottom: 0;
+}
+.text-muted {
+    color: #6c757d!important;
+}
+.body .text-muted {
+    color: #666!important;
+    color: var(--color-text-muted)!important;
+}
+.body .dialog .card-subtitle {
+    margin-bottom: 2rem;
+}
+
+.text-info {
+    color: #17a2b8!important;
+}
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+.body .dialog .row {
+    margin: 0 0 1rem;
+}
+.col-3 {
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+label {
+    display: inline-block;
+    margin-bottom: .5rem;
+}
+.col-form-label {
+    padding-top: calc(0.375rem + 1px);
+    padding-bottom: calc(0.375rem + 1px);
+    margin-bottom: 0;
+    font-size: inherit;
+    line-height: 1.5;
+}
+.col-9 {
+    flex: 0 0 75%;
+    max-width: 75%;
+}
+.body textarea, .body select, .body input, .body .input-group-text, .body .form-control:focus {
+    border-color: #bbb;
+    border-color: var(--color-border-outer);
+}
+.form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.form-text {
+    display: block;
+    margin-top: .25rem;
+}
+.body .dialog .row {
+    margin: 0 0 1rem;
+}
+.col-form-label {
+    padding-top: calc(0.375rem + 1px);
+    padding-bottom: calc(0.375rem + 1px);
+    margin-bottom: 0;
+    font-size: inherit;
+    line-height: 1.5;
+}
+.body .btns {
+    margin-top: .75rem;
+    text-align: right;
+}
+.btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.body a, .body button {
+    outline: 0;
+}
+button:not(:disabled), [type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled) {
+    cursor: pointer;
+}
+.btn:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}
+.body .btn:not([class*=btn-outline]) {
+    color: #000;
+    color: var(--color-text-color);
+}
+.body .btn.btn-primary, .body .btn.btn-secondary, .body .btn.btn-success, .body .btn.btn-info, .body .btn.btn-warning, .body .btn.btn-danger {
+    color: #fff;
+}
+.body .btn.btn-primary {
+    background-color: var(--color-primary-theme);
+    border-color: var(--color-primary-theme-border);
+}
+.body .btns .btn-primary, .body .btns .btn-success {
+    min-width: 6rem;
+}

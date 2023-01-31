@@ -367,10 +367,7 @@ pre {
     border-color: #bbb;
     border-color: var(--color-border-outer);
 }
-.body textarea, .body select, .body input, .body .input-group-text, .body .form-control:focus {
-    border-color: #bbb;
-    border-color: var(--color-border-outer);
-}
+
 .reply-form>.reply-form__container>.reply-form__info>.reply-form__user-info>input.reply-form-user-input {
     border: none;
     border-radius: 3px;
@@ -434,4 +431,15 @@ button:not(:disabled), [type=button]:not(:disabled), [type=reset]:not(:disabled)
     justify-content: flex-end;
     padding-bottom: .5em;
     padding-right: .5em;
+}
+.reply-form>.reply-form__container>.reply-form-textarea-wrapper>.reply-form-textarea:focus+.reply-form__submit-button-wrapper, .reply-form>.reply-form__container>.reply-form-textarea-wrapper>.reply-form-textarea:not(:placeholder-shown)+.reply-form__submit-button-wrapper {
+    display: flex;
+}
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+@media screen and (max-width: 767px){
+    .body .board-article .article-list .list-table .vrow.column .vcol.col-id>* {
+        display: none;
+    }
 }

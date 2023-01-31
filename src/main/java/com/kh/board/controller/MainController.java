@@ -5,6 +5,8 @@ import com.kh.board.domain.User;
 import com.kh.board.dto.ChannelDto;
 import com.kh.board.dto.SubscribeDto;
 import com.kh.board.dto.UserDto;
+import com.kh.board.dto.request.ChannelRequest;
+import com.kh.board.dto.request.UserSignUpDto;
 import com.kh.board.repository.ChannelRepository;
 import com.kh.board.repository.UserRepository;
 import com.kh.board.security.BoardPrincipal;
@@ -20,6 +22,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -35,6 +39,7 @@ public class MainController {
     private final SubscribeService subscribeService;
     private final ChannelService channelService;
     private final ChannelManagerService channelManagerService;
+    private final UserRepository userRepository;
 
 
     @GetMapping("/")
@@ -52,6 +57,53 @@ public class MainController {
         m.addAttribute("chanList", chanList);
 
         return "index";
+    }
+
+    @GetMapping("/signup")
+    public String signUp() {
+
+        return "registerForm";
+    }
+
+    @PostMapping("/signup")
+    public String registerUser(@RequestParam String userId, @RequestParam String password,
+                               @RequestParam String email, @RequestParam String nickname) throws Exception {
+        UserSignUpDto userSignUpDto = UserSignUpDto.of(userId, password, email, nickname);
+        userService.signUp(userSignUpDto);
+
+        return "/";
+    }
+
+    @GetMapping("/createChannel")
+    public String createChannelForm(@AuthenticationPrincipal BoardPrincipal user, Model m) {
+        if(user!=null){
+            UserDto userInfo = userService.getUser(user.nickname());
+            List<SubscribeDto> subInfo = subscribeService.getUserSubscribes(user.getUsername());
+            m.addAttribute("userInfo", userInfo);
+            m.addAttribute("subList", subInfo);
+        }
+        if(user.getUsername() == null || user.getUsername() == "") {
+            return "redirect:/login";
+        }
+
+        return "channelForm";
+
+    }
+
+    @PostMapping("/createChannel")
+    public String createChannelForm(
+            @RequestParam String channelName
+            , @RequestParam String description
+            , @RequestParam String slug
+            , @AuthenticationPrincipal BoardPrincipal user){
+        if(user.getUsername() == null || user.getUsername() == "") {
+            return "redirect:/login";
+        }
+
+        ChannelRequest channelRequest = ChannelRequest.of(channelName, description, slug);
+        channelService.createChannel(channelRequest);
+
+        return "redirect:/"+slug;
     }
 
 }

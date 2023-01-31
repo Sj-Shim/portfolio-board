@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<thlogic>
+    <attr sel=".reply-form" th:action="@{${post.id + '/comment/' + comment.commentId}}">
+        <attr sel="input[name='parentId']" th:value="${comment.commentId}"/>
+        <attr sel=".reply-form__user-info">
+            <attr sel="#replyWriter" th:value="${userInfo.nickname}" th:disabled="'disabled'" />
+        </attr>
+    </attr>
+</thlogic>

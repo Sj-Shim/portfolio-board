@@ -41,6 +41,17 @@ public record PostWithCommentResponse(
     }
 
     public static PostWithCommentResponse from (Post post) {
+//        List<CommentResponse> commentResponses = post.getCommentList().stream().map(comment -> CommentResponse.from(comment, comment.getReplies().stream().filter(reply -> reply.getParent() != null).collect(Collectors.groupingBy(Comment::getParent)).keySet().stream().toList())).collect(Collectors.toList());
+        List<CommentResponse> commentResponses = post.getCommentList().stream()
+                .map(comment -> {
+                    List<Comment> replies = comment.getReplies().stream()
+                            .filter(reply -> reply.getParent() != null)
+                            .collect(Collectors.toList());
+                    return CommentResponse.from(comment, replies);
+                })
+                .collect(Collectors.toList());
+
+
 
         return new PostWithCommentResponse(
                 post.getId(),
@@ -51,7 +62,8 @@ public record PostWithCommentResponse(
                 post.getRating(),
                 post.getHit(),
                 post.getCreatedDate(),
-                replies(post)
+                commentResponses
+
         );
     }
 

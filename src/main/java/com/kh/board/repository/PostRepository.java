@@ -9,12 +9,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.security.core.parameters.P;
 
 import java.util.Optional;
+import java.util.Set;
 
 @RepositoryRestResource
 public interface PostRepository extends JpaRepository<Post, Long>
@@ -31,7 +35,7 @@ public interface PostRepository extends JpaRepository<Post, Long>
     /** 제목 검색 */
     Page<Post> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
     /** 제목/내용 검색 */
-    Page<Post> findByTitleContainingIgnoreCaseOrContentIsContainingIgnoreCase(String keyword, String keyword2, Pageable pageable);
+    Page<Post> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String keyword, String keyword2, Pageable pageable);
     /** 내용 검색*/
     Page<Post> findByContentContainingIgnoreCase(String keyword, Pageable pageable);
     /** 작성자 검색*/
@@ -41,7 +45,7 @@ public interface PostRepository extends JpaRepository<Post, Long>
 //    Page<Post> findByComments_ContentContainingIgnoreCase(String keyword, Pageable pageable);
 
     /** 채널별 게시글 전체*/
-    Page<Post> findByChannel_ChannelName(String channelName, Pageable pageable);
+    Page<Post> findByChannel_Slug(String slug, Pageable pageable);
 
 
 
@@ -64,4 +68,5 @@ public interface PostRepository extends JpaRepository<Post, Long>
         bindings.bind(root.user.userId).first(StringExpression::containsIgnoreCase);
 
     }
+
 }

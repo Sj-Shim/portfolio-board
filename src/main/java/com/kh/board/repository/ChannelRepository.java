@@ -27,9 +27,13 @@ public interface ChannelRepository extends JpaRepository<Channel, String>
     Optional<Channel> findBySlugEquals(String slug);
     Optional<Channel> findBySlugContainingIgnoreCase(String slug);
 
+    boolean existsByChannelName(String channelName);
+
 
     @Override
     Channel getReferenceById(String s);
+
+
 
     @Override
     default void customize(QuerydslBindings bindings, QChannel root){

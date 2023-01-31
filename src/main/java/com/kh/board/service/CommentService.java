@@ -42,7 +42,8 @@ public class CommentService {
     public void save(Long postId, CommentRequest commentRequest) {
         Comment comment = commentRequest.toEntity();
         comment.confirmPost(postRepository.findById(postId).orElseThrow(() -> new PostException(PostExceptionType.POST_NOT_FOUND)));
-        comment.confirmUser(userRepository.findByUserId(SecurityUtil.getLoginUsername()).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER)));
+        comment.confirmUser(userRepository.findById(SecurityUtil.getLoginUsername()).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER)));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostException(PostExceptionType.POST_NOT_FOUND));
 
         commentRepository.save(comment);
     }

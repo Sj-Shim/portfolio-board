@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,125 +8,104 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/chanMain.css">
+    <link rel="stylesheet" href="/css/article.css">
+    <link rel="stylesheet" href="/css/writeForm.css">
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVQI12P4//8/AAX+Av7czFnnAAAAAElFTkSuQmCC">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <link rel="shortcut icon" href="#" />
     <link rel="icon" href="data:,">
+    <link rel="icon" href="data:;base64,=">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
-    <style>
-        .post-container {
-            border: 1px solid black;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
 
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .new-comment-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .new-comment {
-            width: 100%;
-            margin-right: 10px;
-        }
-
-        .comments-list {
-            margin-top: 10px;
-        }
-        .comments-list .comment-item {
-            border: 1px solid black;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
-        .comments-list .comment-item .replies-container {
-            margin-left: 20px;
-        }
-    </style>
 </head>
 <body class="body">
 <div id="top"></div>
 
     <div class="root-container">
-        <header class="p-3 text-bg-dark" id="header" th:replace="header.html">
-            <div class="container-md">
-              <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                    <ion-icon name="home-outline" size="large"></ion-icon>
-                </a>
-        
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown" aria-expanded="false">구독
-                            <span class="d-none d-md-inline"> </span>
-                            <span class="d-none d-md-inline">채널</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="#">Action</a></li>
-                          <li><a class="dropdown-item" href="#">Another action</a></li>
-                          <li><a class="dropdown-item" href="#">Something else here</a></li>
-                          <li class="dropdown-divider"></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="d-none d-md-inline">채널</span>
-                            <span class="d-none d-md-inline"> </span>
-                            검색
-                        </a>
-                    </li>
-                </ul>
-        
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                  <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
-                </form>
-        
-                <div class="text-end">
-                  <button type="button" class="btn btn-outline-light me-2">Login</button>
-                  <button type="button" class="btn btn-warning">Sign-up</button>
-                </div>
-              </div>
-            </div>
+        <header class="p-3 text-bg-dark" id="header">
         </header>
 
-        <div class="post-container">
-            <div class="post-header">
-                <h2>{{post.title}}</h2>
-                <p>{{post.writer}}</p>
-                <p>{{post.createdAt}}</p>
-                <button class="update-post-btn">Update</button>
-                <button class="delete-post-btn">Delete</button>
-            </div>
-            <div class="post-content">
-                {{post.content}}
-            </div>
-            <div class="comments-container">
-                <h3>Comments</h3>
-                <div class="new-comment-container">
-                    <textarea class="new-comment"></textarea>
-                    <button class="submit-comment-btn">Submit</button>
-                </div>
-                <div class="comments-list">
-                    <div class="comment-item" data-id="{{comment.id}}">
-                        <p>{{comment.content}}</p>
-                        <p>{{comment.writer}}</p>
-                        <p>{{comment.createdAt}}</p>
-                        <button class="write-reply-btn">Reply</button>
-                        <div class="replies-container"></div>
+        <div class="content-wrapper clearfix">
+            <article class="container-md board-article">
+                <div class="board-article-list">
+                    <div class="board-title">
+                        <div class="left">
+                            <a href="/" class="channel-icon-link" aria-label="채널 이동">
+                                <!-- <img src="" alt="채널아이콘" class="channel-icon"> -->
+                                <div class="channel-icon text-icon">0</div>
+                            </a>
+                        </div>
+                        <div class="right">
+                            <div class="head">
+                                <a  href="/" class="title" >
+                                    <span >00 채널</span>
+                                </a>
+                                <a href="javascript:void(0)" class="info-btn" role="button">
+                                    <ion-icon name="information-circle-outline"></ion-icon>
+                                </a>
+
+                                <div class="buttons">
+                                    <a href="/{slug}/subscribe"  class="btn btn-sm subscribe-btn">
+                                        <span class="subscribe">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                            <span class="text">구독</span>
+                                        </span>
+                                        <span class="subscribed">
+                                            <ion-icon name="checkmark-outline"></ion-icon>
+                                            <span class="text">구독 중</span>
+                                        </span>
+                                        <span class="unsubscribe">
+                                            <ion-icon name="close-outline"></ion-icon>
+                                            <span class="text">구독 취소</span>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="description">
+                                <div>
+                                    <span id="subCount">구독자 명</span>
+                                    <span class="sep"></span>
+                                    <span class="user-info">
+                                        <span >관리자명</span>
+                                    </span>
+                                </div>
+                                <div id="chanDesc">description</div>
+                            </div>
+                        </div>
                     </div>
+
+                    <form action="" class="article_write_form" id="article_write_form">
+                        <div class="write-head"> 글쓰기 </div>
+                        <div class="row">
+                            <div class="form-group col-12">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">제목</span>
+                                    </div>
+                                    <input type="text" name="title" id="inputTitle" class="form-control form-control-sm" maxlength="255">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="write-body">
+                            <div class="fr-box fr-ltr light-theme fr-basic fr-top"></div>
+                            <textarea name="content" id="content" cols="30" rows="10" class="form-control"></textarea>
+                        </div>
+                        <div class="btns">
+                            <button class="btn btn-arca" id="submitBtn" type="submit">작성</button>
+                        </div>
+                    </form>
+
+
                 </div>
-            </div>
+            </article>
         </div>
 
 
 
         
-        <div id="footer" th:replace="footer.html">
+        <div id="footer">
             <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top footer">
                 <div class="container-md">
                     <div class="col-md-4 d-flex align-items-center">
@@ -137,18 +116,6 @@
                 </div>
             </footer>
         </div>
-        <ul class="nav-control">
-            <li>
-            <a href="#top" id="goTopBtn" title="맨위로 이동">
-                <ion-icon name="caret-up-outline"></ion-icon>
-            </a>
-            </li>
-            <li>
-            <a href="#bottom" id="goBottomBtn" title="맨아래로 이동">
-                <ion-icon name="caret-down-outline"></ion-icon>
-            </a>
-            </li>
-        </ul>
     </div>
 
 

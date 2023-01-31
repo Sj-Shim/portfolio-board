@@ -177,6 +177,7 @@
                                                     </a>
                                                 </div>
                                             </div>
+
                                             <div class="message">
                                                 <div class="text">
                                                     <pre>내용</pre>
@@ -184,6 +185,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <form action="" class="reply-form"></form>
                                     <!--대댓글-->
                                     <div class="comment-wrapper">
                                         <div class="comment-item" id="c_cNo">
@@ -235,8 +237,6 @@
                             </form>
                         </div>
                     </div>
-
-
 
 
 
@@ -389,5 +389,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<script>
+    $(function() {
+        $(".reply-link").on("click", function (){
+            $(this).parents(".comment-wrapper").children(".reply-form").css({
+                display: 'block',
+            });
+        })
+    })
+</script>
 </body>
 </html>

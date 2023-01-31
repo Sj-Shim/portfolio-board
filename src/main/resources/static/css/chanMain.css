@@ -660,3 +660,8 @@ button:not(:disabled), [type=button]:not(:disabled), [type=reset]:not(:disabled)
     background-color: #eee;
     background-color: var(--color-bg-focus);
 }
+@media screen and (max-width: 767px){
+    .body .board-article-list .article-list .list-table .vrow.column .vcol.col-id {
+        display: none;
+    }
+}

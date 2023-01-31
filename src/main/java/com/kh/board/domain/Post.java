@@ -20,6 +20,7 @@ public class Post extends AuditingTimeEntity{
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @Setter
     @JoinColumn(name = "channel_slug")
+    @ToString.Exclude
     private Channel channel;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

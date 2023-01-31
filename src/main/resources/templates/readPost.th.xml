@@ -55,21 +55,43 @@
         </attr>
     </attr>
 
+
     <attr sel=".list-area">
         <attr sel=".comment-wrapper" th:each="comment : ${post.comments}">
             <attr sel="div.comment-item" th:id="'c_'+${comment.commentId}">
-
+                <attr sel=".content">
+                    <attr sel=".user-info">
+                        <attr sel="span" th:text="${comment.userDto.nickname}"/>
+                    </attr>
+                    <attr sel=".right">
+                        <attr sel="time" th:text="${#temporals.format(comment.createdDate, 'yy/MM/dd HH:mm:ss')}"/>
+                        <attr sel=".reply-link" th:data-target="${comment.commentId}" th:href="'javascript:void(0)'"/>
+                    </attr>
+                    <attr sel=".message">
+                        <attr sel=".text" th:text="${comment.content}" th:href="'javascript:void(0)'"/>
+                    </attr>
+                </attr>
+            </attr>
+            <attr sel=".reply-form" th:replace="replyForm :: .reply-form"></attr>
+            <attr sel=".comment-wrapper/comment-wrapper" th:if="${not comment.replies.isEmpty && comment.commentId == reply.parentId}" th:each="reply : ${comment.replies}">
+                <attr sel=".comment-item" th:id="${reply.replyId}">
+                    <attr sel=".user-info/span" th:text="${reply.userDto.nickname}"/>
+                    <attr sel=".reply-link" th:data-target="${reply.replyId}"/>
+                    <attr sel=".message/.text/pre" th:text="${reply.content}"/>
+                </attr>
             </attr>
         </attr>
     </attr>
 
     <attr sel="#commentForm" sec:authorize="!isAuthenticated()" th:visible="hidden"/>
-    <attr sel="#commentForm" sec:authorize="isAuthenticated()" th:visible="visible" th:action="@{${chanInfo.slug + '/post/' + post.id + '/comment'}}">
+    <attr sel="#commentForm" sec:authorize="isAuthenticated()" th:visible="visible" th:action="@{${post.id + '/comment'}}" th:method="'POST'">
+        <attr sel="input[name='slug']" th:value="${chanInfo.slug}"/>
+        <attr sel="input[name='postId']" th:value="${post.id}" />
         <attr sel="#commentWriter" th:value="${userInfo.nickname}"/>
 
         <attr sel=".reply-form-textarea" th:style="'height:99.5px;outline:none;'" th:required="'required'">
             <attr sel=".reply-from__submit-button-wrapper">
-                <attr sel="commentFormButton"></attr>
+                <attr sel="#commentFormButton" th:type="'submit'"></attr>
             </attr>
         </attr>
     </attr>

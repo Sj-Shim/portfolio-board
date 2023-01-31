@@ -27,7 +27,6 @@ public class Channel extends AuditingTimeEntity{
 
 
     @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER)
-    @ToString.Exclude
     private final Set<Subscribe> subscribes = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "channel", fetch = FetchType.EAGER)
@@ -35,6 +34,7 @@ public class Channel extends AuditingTimeEntity{
     private final Set<ChannelManager> channelManagers = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<Post> postList = new ArrayList<>();
 
 

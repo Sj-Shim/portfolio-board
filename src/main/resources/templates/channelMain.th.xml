@@ -3,7 +3,7 @@
     <attr sel="#header" th:replace="header :: #header" />
     <attr sel="#footer" th:replace="footer :: #footer" />
 
-    <attr sel="a.channel-icon-link" th:href="@{'/'+${chanInfo.slug}}" />
+    <attr sel="a.channel-icon-link" th:href="'/'+${chanInfo.slug}" />
     <attr sel="div.channel-icon" th:text="${#strings.substring(chanInfo.channelName, 0, 1)}" />
 
     <attr sel=".head">
@@ -38,7 +38,7 @@
 
     <attr sel="div.article-list">
         <attr sel="div.list-table">
-            <attr sel="a" th:href="@{${chanInfo.slug  +'/post/'+ post.id}(page=${posts.number})}" th:class="'vrow column'" th:each="post :${posts}">
+            <attr sel="a" th:href="@{${slug+'/post/'+ post.id}(page=${posts.number})}" th:class="'vrow column'" th:each="post :${posts}">
                 <attr sel=".col-id" th:text="${post.id}"/>
                 <attr sel=".col-title">
                     <attr sel=".title" th:text="${post.title}"/>

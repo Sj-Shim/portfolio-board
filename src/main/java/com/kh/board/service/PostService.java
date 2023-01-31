@@ -51,7 +51,7 @@ public class PostService {
     }
 
     public Page<PostResponse> searchChannelPosts(String slug, Pageable pageable) {
-        return postRepository.findByChannel_ChannelName(slug, pageable).map(PostResponse::from);
+        return postRepository.findByChannel_Slug(slug, pageable).map(PostResponse::from);
     }
 
 //    public Page<PostDto> searchChannelPostsByCategory(String slug, String categoryName, Pageable pageable) {
@@ -74,13 +74,27 @@ public class PostService {
         return postRepository.findByChannelEquals(channelRepository.findBySlugEquals(slug).orElseThrow(()->new EntityNotFoundException("searchPosts 슬러그로 채널 못찾음:" +slug)), pageable).map(PostResponse::from);
         }
 
-        return switch (target){
+        Page<PostResponse> set1 = switch (target) {
             case ALL -> postRepository.findByTitleContainingIgnoreCaseOrContentIsContainingIgnoreCaseOrUser_NicknameContainingIgnoreCase(keyword, keyword, keyword, pageable).map(PostResponse::from);
             case TITLE -> postRepository.findByTitleContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
-            case TITLEORCONTENT -> postRepository.findByTitleContainingIgnoreCaseOrContentIsContainingIgnoreCase(keyword, keyword, pageable).map(PostResponse::from);
+            case TITLEORCONTENT -> postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword, pageable).map(PostResponse::from);
             case CONTENT -> postRepository.findByContentContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
             case USER -> postRepository.findByUser_NicknameContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
         };
+            Page<PostResponse> set2 = postRepository.findByChannelEquals(channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND)), pageable).map(PostResponse::from);
+
+            Set<PostResponse> setPost = new HashSet<>(set2.getContent());
+            setPost.retainAll(set1.getContent());
+            Page<PostResponse> combinedPage = new PageImpl<>(new ArrayList<>(setPost), pageable, setPost.size());
+            return combinedPage;
+
+//        return switch (target){
+//            case ALL -> postRepository.findByTitleContainingIgnoreCaseOrContentIsContainingIgnoreCaseOrUser_NicknameContainingIgnoreCase(keyword, keyword, keyword, pageable).map(PostResponse::from);
+//            case TITLE -> postRepository.findByTitleContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
+//            case TITLEORCONTENT -> postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword, pageable).map(PostResponse::from);
+//            case CONTENT -> postRepository.findByContentContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
+//            case USER -> postRepository.findByUser_NicknameContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
+
     }
 
     @Transactional(readOnly = true)
@@ -94,7 +108,6 @@ public class PostService {
         return PostDto.from(postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException()));
     }
     public Post findByPostId(Long id) {
-        increaseHit(id);
         return postRepository.findById(id).orElseThrow(() -> new PostException(POST_NOT_FOUND));
     }
 
@@ -111,7 +124,6 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostWithCommentResponse getPostWithComments(Long postId) {
-        increaseHit(postId);
         return postRepository.findById(postId)
                 .map(post -> PostWithCommentResponse.from(post))
                 .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다. 글번호 : " + postId));
@@ -119,7 +131,6 @@ public class PostService {
     public void increaseHit(Long postId){
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
         post.setHit(post.getHit()+1);
-        postRepository.save(post);
     }
 
     public void savePost(PostRequest dto, String slug) {
@@ -127,7 +138,9 @@ public class PostService {
 
         post.confirmUser(userRepository.findByUserId(SecurityUtil.getLoginUsername()).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER)));
 
-        post.confirmChannel(channelRepository.findBySlug(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND)));
+        post.confirmChannel(channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND)));
+        post.setHit(0);
+        post.setRating(0);
 
 //        User user = userRepository.getReferenceById(dto.user().userId());
 //        Channel channel = channelRepository.getReferenceById(dto.channelName());

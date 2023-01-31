@@ -3,6 +3,8 @@ package com.kh.board.dto.request;
 import com.kh.board.domain.Channel;
 import com.kh.board.dto.ChannelDto;
 
+import javax.validation.constraints.Pattern;
+
 public record ChannelRequest(
         String channelName,
         String description,

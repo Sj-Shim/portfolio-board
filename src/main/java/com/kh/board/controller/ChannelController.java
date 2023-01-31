@@ -1,10 +1,13 @@
 package com.kh.board.controller;
 
+import com.kh.board.domain.Post;
 import com.kh.board.domain.Subscribe;
 import com.kh.board.domain.type.SearchType;
 import com.kh.board.dto.ChannelDto;
 import com.kh.board.dto.SubscribeDto;
 import com.kh.board.dto.UserDto;
+import com.kh.board.dto.request.CommentRequest;
+import com.kh.board.dto.request.PostRequest;
 import com.kh.board.dto.request.SubscribeRequest;
 import com.kh.board.dto.response.PostResponse;
 //import com.kh.board.repository.CategoryRepository;
@@ -32,6 +35,7 @@ import java.util.List;
 public class ChannelController {
 
     private final PostService postService;
+    private final CommentService commentService;
     private final ChannelService channelService;
     private final UserService userService;
     private final SubscribeService subscribeService;
@@ -76,9 +80,10 @@ public class ChannelController {
             map.addAttribute("userInfo", userInfo);
             map.addAttribute("subList", subInfo);
         }
-
+        postService.increaseHit(postId);
         PostWithCommentResponse post = PostWithCommentResponse.from(postService.findByPostId(postId));
         ChannelDto channelDto = channelService.getChannelBySlug(slug);
+
         map.addAttribute("chanInfo", channelDto);
 
         map.addAttribute("post", post);
@@ -115,26 +120,57 @@ public class ChannelController {
 
         if(user!=null){
             UserDto userInfo = userService.getUser(user.nickname());
-            List<Subscribe> subInfo = subscribeService.getFullInfoSubs(user.getUsername());
+            List<SubscribeDto> subInfo = subscribeService.getUserSubscribes(user.getUsername());
             m.addAttribute("userInfo", userInfo);
             m.addAttribute("subList", subInfo);
         }
+        ChannelDto channelDto = channelService.getChannelBySlug(slug);
+        m.addAttribute("chanInfo", channelDto);
+
 
         return "writeForm";
     }
-//
-//    @PostMapping("/write")
-//    public String writePost() {
-//
-//        return "redirect:/{slug}";
-//    }
-//
-//    @GetMapping("{postId}")
-//    public String readPost() {
-//
-//
-//        return "post";
-//    }
+
+    @PostMapping("/post/{postId}/comment")
+    public String saveComment(@RequestParam String content,
+                              @RequestParam Long postId,
+                              @AuthenticationPrincipal BoardPrincipal user){
+        if(user.getUsername() == null || user.getUsername() == "") {
+            return "redirect:/login";
+        }
+        CommentRequest commentRequest = CommentRequest.of(content);
+        commentService.save(postId, commentRequest);
+
+        return "redirect:/{slug}/post/{postId}";
+    }
+
+    @PostMapping("/post/{postId}/comment/{parentId}")
+    public String saveReply(
+            @PathVariable Long postId,
+            @RequestParam String content,
+            @RequestParam Long parentId,
+            @AuthenticationPrincipal BoardPrincipal user){
+        if(user.getUsername() == null || user.getUsername() == "") {
+            return "redirect:/login";
+        }
+        CommentRequest commentRequest = CommentRequest.of(content);
+        commentService.saveReply(postId, parentId, commentRequest);
+        return "redirect:/{slug}/post/{postId}";
+    }
+
+    @PostMapping("/write")
+    public String writePost(
+            @PathVariable String slug, @AuthenticationPrincipal BoardPrincipal user,
+            @RequestParam String title,
+            @RequestParam String content) {
+        PostRequest request = PostRequest.of(title, content);
+        System.out.println("slug == " + slug);
+
+        postService.savePost(request, slug);
+
+
+        return "redirect:/{slug}";
+    }
 
 
 }

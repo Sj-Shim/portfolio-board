@@ -39,9 +39,17 @@ public class UserService {
     public void signUp(UserSignUpDto userSignUpDto) throws  Exception {
         User user = userSignUpDto.toEntity();
         user.encodePassword(passwordEncoder);
-        if(userRepository.findByUserId(userSignUpDto.userId()).isPresent()){
+        if(userRepository.findById(userSignUpDto.userId()).isPresent()){
             throw new UserException(UserExceptionType.ALREADY_EXIST_USERNAME);
         }
+        if(userRepository.existsByNickname(userSignUpDto.nickname())){
+            throw new UserException(UserExceptionType.ALREADY_EXIST_NICKNAME);
+        }
+        if(userRepository.existsByEmail(userSignUpDto.email())){
+            throw new UserException(UserExceptionType.ALREADY_EXIST_EMAIL);
+        }
+        user.setPoint(3000);
+
         userRepository.save(user);
     }
 

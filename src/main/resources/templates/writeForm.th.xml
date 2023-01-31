@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<thlogic>
+    <attr sel="#header" th:replace="header :: #header" />
+    <attr sel="#footer" th:replace="footer :: #footer" />
+
+    <attr sel=".board-title">
+        <attr sel=".left">
+            <attr sel=".channel-icon-link" th:href="@{${chanInfo.slug}}">
+                <attr sel=".text-icon" th:text="${#strings.substring(chanInfo.channelName, 0, 1)}" />
+            </attr>
+        </attr>
+        <attr sel=".head">
+            <attr sel=".title" th:href="@{'/'+${chanInfo.slug}}" th:data-channel="${chanInfo.channelName}+'채널'">
+                <attr sel="span" th:title="${chanInfo.channelName}+' 채널'" th:text="${chanInfo.channelName}+' 채널'"/>
+            </attr>
+            <attr sel=".buttons">
+                <attr sel=".subscribe-btn" th:href="@{'/'+${chanInfo.slug}+'/subscribe'}" th:data-chan="${chanInfo.channelName}" />
+            </attr>
+        </attr>
+        <attr sel=".description">
+            <attr sel="div[0]">
+                <attr sel="#subCount" th:text="'구독자 '+ ${chanInfo.subCount}+'명'"/>
+                <attr sel=".user-info">
+                    <attr sel="span" th:text="'관리자 '+${chanInfo.channelManagerDtos()[0].user().nickname}"/>
+                </attr>
+            </attr>
+            <attr sel="#chanDesc" th:text="${chanInfo.description}"/>
+        </attr>
+    </attr>
+
+    <attr sel=".article_write_form" th:action="'/'+${slug} +'/write'" th:method="'POST'">
+
+    </attr>
+
+</thlogic>

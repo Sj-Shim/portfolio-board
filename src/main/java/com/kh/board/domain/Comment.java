@@ -23,6 +23,7 @@ public class Comment extends AuditingTimeEntity{
     @Setter
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
+    @ToString.Exclude
     private Post post;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

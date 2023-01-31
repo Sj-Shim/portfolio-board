@@ -48,11 +48,20 @@ public class ChannelService {
     }
 
     public void createChannel(ChannelRequest channelRequest) {
+        if(channelRepository.existsById(channelRequest.slug()) || channelRepository.existsByChannelName(channelRequest.channelName())){
+            return;
+        }
+        User user = userRepository.findById(SecurityUtil.getLoginUsername()).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER));
+        if(user.getPoint() < 3000) return;
 
         Channel channel = channelRequest.toEntity();
-        ChannelManager channelManager = ChannelManager.of(channel, userRepository.findByUserId(SecurityUtil.getLoginUsername()).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER)), ManagerLevel.PRIME);
+        ChannelManager channelManager = ChannelManager.of(channel, user, ManagerLevel.PRIME);
         channel.addManager(channelManager);
+
+
+        user.setPoint(user.getPoint() - 3000);
         channelRepository.save(channel);
+        channelManagerRepository.save(channelManager);
     }
 
 

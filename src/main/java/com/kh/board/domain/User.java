@@ -98,8 +98,10 @@ public class User extends AuditingTimeEntity implements Serializable {
         this.email = email;
     }
     public void encodePassword(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(password);
+//        this.password = passwordEncoder.encode(password);
+        this.password = "{noop}" + password;
     }
+
 
     public boolean matchPassword(PasswordEncoder passwordEncoder, String checkPassword) {
         return passwordEncoder.matches(checkPassword, getPassword());

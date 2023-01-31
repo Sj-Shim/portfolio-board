@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/chanMain.css">
+    <link rel="stylesheet" href="/css/channelForm.css">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
 </head>
@@ -55,6 +56,59 @@
               </div>
             </div>
         </header>
+
+        <div class="content-wrapper clearfix">
+            <article class="container-md board-article">
+                <div class="row">
+                    <div class="col-sm-0 col-lg-1"></div>
+                    <div class="col-sm-12 col-lg-10">
+                        <div class="dialog card">
+                            <div class="card-block">
+                                <h4 class="card-title">채널 만들기</h4>
+                                <h6 class="card-subtitle text-muted">
+                                    채널을 만들면
+                                    <span class="text-info">3000</span>
+                                    포인트를 소모하게 됩니다.
+                                </h6>
+                                <form action="/createChannel" id="create_board_form" method="post">
+                                    <div class="form-group row">
+                                        <label for="nameInput" class="col-3 col-form-label">채널 이름</label>
+                                        <div class="col-9">
+                                            <input type="text" name="channelName" id="nameInput" class="form-control" maxlength="20">
+                                            <p id="nameDesc" class="form-text text-muted">이름에 채널은 자동으로 추가됩니다. 000 채널이라면 000만 입력해주세요.</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="descriptionInput" class="col-3 col-form-label">채널 설명</label>
+                                        <div class="col-9">
+                                            <input type="text" name="description" id="descriptionInput" class="form-control" maxlength="255">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="slugInput" class="col-3 col-form-label">채널 slug</label>
+                                        <div class="col-9">
+                                            <input type="text" name="slug" id="slugInput" class="form-control" maxlength="20">
+                                            <p class="form-text text-muted">
+                                                채널 slug란 주소창에 사용될 채널 아이디입니다.
+                                                <br>
+                                                채널 slug는 알파벳과 숫자만 가능합니다.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="btns">
+                                        <button class="btn btn-primary" id="submitBtn" type="submit">만들기</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-0 col-lg-1"></div>
+                </div>
+            </article>
+        </div>
+
+
+
 
 
         <div id="footer" th:replace="footer.html">

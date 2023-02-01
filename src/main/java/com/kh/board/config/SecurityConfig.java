@@ -30,24 +30,46 @@ import java.util.Collection;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        String[] staticResources = {
-          "/css/**",
-          "/assets/**",
-          "/js/**"
-        };
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//
+//        return http
+//                .authorizeHttpRequests(auth ->
+//                        auth.requestMatchers(PathRequest.toStaticResources().atCommonLocations() ).permitAll()
+//                                .mvcMatchers(HttpMethod.GET,"/", "/signup", "/{slug}", "/{slug}/post/{postId}")
+//                                .permitAll()
+//                                .anyRequest().authenticated())
+//                .formLogin().and().cors().and().csrf().disable()
+//                .logout()
+//                .logoutSuccessUrl("/")
+//                .and().build();
+//    }
 
-        return http
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(PathRequest.toStaticResources().atCommonLocations() ).permitAll()
-                                .mvcMatchers(HttpMethod.GET,"/", "/signup", "/{slug}", "/{slug}/post/{postId}")
-                                .permitAll()
-                                .anyRequest().authenticated())
-                .formLogin().and().cors().and().csrf().disable()
-                .logout()
-                .logoutSuccessUrl("/")
-                .and().build();
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http.csrf().disable().authorizeRequests().anyRequest().fullyAuthenticated();
+//        http.authorizeRequests().antMatchers("/login", "/", "/signup", "/{slug}", "/{slug}/post/{postId}").permitAll()
+//                .anyRequest().authenticated()
+//                .and().formLogin()
+//                .usernameParameter("userId")
+//                .permitAll()
+//                .and()
+//                .logout().
+//                logoutSuccessUrl("/");
+//        http.headers().frameOptions().sameOrigin();
+//        return http.build();
+
+        http.csrf().disable().authorizeRequests().antMatchers("/login", "/", "/signup", "/{slug}", "/{slug}/post/{postId}").permitAll();
+        http.authorizeRequests().anyRequest().fullyAuthenticated()
+                .and().formLogin()
+                .permitAll()
+                .and()
+                .logout().
+                logoutSuccessUrl("/");
+        http.headers().frameOptions().sameOrigin();
+        return http.build();
+
+
     }
 
     @Bean
@@ -59,10 +81,10 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. 사용자 이름 : " + username));
     }
 
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-//    }
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers("/css/**", "/js/**", "/assets/**");
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

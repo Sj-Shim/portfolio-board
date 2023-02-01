@@ -2,12 +2,15 @@ package com.kh.board.controller;
 
 import com.kh.board.domain.Post;
 import com.kh.board.domain.Subscribe;
+import com.kh.board.domain.type.FormStatus;
 import com.kh.board.domain.type.SearchType;
 import com.kh.board.dto.ChannelDto;
+import com.kh.board.dto.PostDto;
 import com.kh.board.dto.SubscribeDto;
 import com.kh.board.dto.UserDto;
 import com.kh.board.dto.request.CommentRequest;
 import com.kh.board.dto.request.PostRequest;
+import com.kh.board.dto.request.PostUpdateDto;
 import com.kh.board.dto.request.SubscribeRequest;
 import com.kh.board.dto.response.PostResponse;
 //import com.kh.board.repository.CategoryRepository;
@@ -20,7 +23,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -77,8 +82,10 @@ public class ChannelController {
         if(user!=null){
             UserDto userInfo = userService.getUser(user.nickname());
             List<SubscribeDto> subInfo = subscribeService.getUserSubscribes(user.getUsername());
+            boolean isSub = subscribeService.checkChanSub(slug);
             map.addAttribute("userInfo", userInfo);
             map.addAttribute("subList", subInfo);
+            map.addAttribute("subCheck", isSub);
         }
         postService.increaseHit(postId);
         PostWithCommentResponse post = PostWithCommentResponse.from(postService.findByPostId(postId));
@@ -121,14 +128,83 @@ public class ChannelController {
         if(user!=null){
             UserDto userInfo = userService.getUser(user.nickname());
             List<SubscribeDto> subInfo = subscribeService.getUserSubscribes(user.getUsername());
+            boolean isSub = subscribeService.checkChanSub(slug);
             m.addAttribute("userInfo", userInfo);
             m.addAttribute("subList", subInfo);
+            m.addAttribute("subCheck", isSub);
+        }
+        FormStatus status = FormStatus.CREATE;
+        ChannelDto channelDto = channelService.getChannelBySlug(slug);
+        m.addAttribute("chanInfo", channelDto);
+        m.addAttribute("postStatus", status);
+
+
+        return "writeForm";
+    }
+    @PostMapping("/write")
+    public String writePost(
+            @PathVariable String slug, @AuthenticationPrincipal BoardPrincipal user,
+            @RequestParam String title,
+            @RequestParam String content) {
+        PostRequest request = PostRequest.of(title, content);
+        System.out.println("slug == " + slug);
+
+        postService.savePost(request, slug);
+
+
+        return "redirect:/{slug}";
+    }
+
+    @GetMapping("/post/{postId}/modify")
+    public String loadModifyForm(
+            @AuthenticationPrincipal BoardPrincipal user
+            , @PathVariable String slug
+            , @PathVariable Long postId
+            , Model m) {
+
+        if (user==null) return "redirect:/login";
+        if(user!=null){
+            UserDto userInfo = userService.getUser(user.nickname());
+            List<SubscribeDto> subInfo = subscribeService.getUserSubscribes(user.getUsername());
+            boolean isSub = subscribeService.checkChanSub(slug);
+            m.addAttribute("userInfo", userInfo);
+            m.addAttribute("subList", subInfo);
+            m.addAttribute("subCheck", isSub);
         }
         ChannelDto channelDto = channelService.getChannelBySlug(slug);
         m.addAttribute("chanInfo", channelDto);
 
+        PostDto post = postService.findById(postId);
+        FormStatus status = FormStatus.UPDATE;
+
+        m.addAttribute("post", post);
+        m.addAttribute("postStatus", status);
+
 
         return "writeForm";
+    }
+
+    @PostMapping("/post/{postId}/modify")
+    public String modifyPost(
+            @PathVariable String slug,
+            @PathVariable Long postId,
+            @ModelAttribute PostUpdateDto postUpdateDto) {
+
+        postService.updatePost(postId, postUpdateDto);
+
+
+        return "redirect:/"+slug+"/post/"+postId;
+    }
+
+    @PostMapping("/post/{postId}/delete")
+    public String deletePost(
+            @PathVariable String slug,
+            @PathVariable Long postId,
+            @AuthenticationPrincipal BoardPrincipal user){
+
+        postService.deletePost(postId);
+
+        return "redirect:/"+slug;
     }
 
     @PostMapping("/post/{postId}/comment")
@@ -158,19 +234,7 @@ public class ChannelController {
         return "redirect:/{slug}/post/{postId}";
     }
 
-    @PostMapping("/write")
-    public String writePost(
-            @PathVariable String slug, @AuthenticationPrincipal BoardPrincipal user,
-            @RequestParam String title,
-            @RequestParam String content) {
-        PostRequest request = PostRequest.of(title, content);
-        System.out.println("slug == " + slug);
 
-        postService.savePost(request, slug);
-
-
-        return "redirect:/{slug}";
-    }
 
 
 }

@@ -39,13 +39,13 @@ public class MainController {
     private final SubscribeService subscribeService;
     private final ChannelService channelService;
     private final ChannelManagerService channelManagerService;
-    private final UserRepository userRepository;
 
 
     @GetMapping("/")
     public String index(@AuthenticationPrincipal BoardPrincipal user, Model m) {
+
         if(user!=null){
-            UserDto userInfo = userService.getUser(user.nickname());
+            UserDto userInfo = userService.getUserInfo(user.getUsername());
             List<SubscribeDto> subInfo = subscribeService.getUserSubscribes(user.getUsername());
             m.addAttribute("userInfo", userInfo);
             m.addAttribute("subList", subInfo);
@@ -71,7 +71,7 @@ public class MainController {
         UserSignUpDto userSignUpDto = UserSignUpDto.of(userId, password, email, nickname);
         userService.signUp(userSignUpDto);
 
-        return "/";
+        return "redirect:/";
     }
 
     @GetMapping("/createChannel")
@@ -96,7 +96,7 @@ public class MainController {
             , @RequestParam String description
             , @RequestParam String slug
             , @AuthenticationPrincipal BoardPrincipal user){
-        if(user.getUsername() == null || user.getUsername() == "") {
+        if(user == null) {
             return "redirect:/login";
         }
 

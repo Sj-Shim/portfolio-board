@@ -29,12 +29,8 @@ import java.util.List;
 public class UserService {
 
     @Autowired private UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired private final PasswordEncoder passwordEncoder;
 
-//    public void createUser(UserDto dto) {
-//        User user = User.of(dto.userId(), dto.password(), dto.email(), dto.nickname());
-//        user = userRepository.save(user);
-//    }
 
     public void signUp(UserSignUpDto userSignUpDto) throws  Exception {
         User user = userSignUpDto.toEntity();
@@ -60,7 +56,7 @@ public class UserService {
         return UserDto.from(user);
     }
     public UserDto getUserInfo(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER));
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER));
         return UserDto.from(user);
     }
 
@@ -69,30 +65,7 @@ public class UserService {
         return UserDto.from(user);
     }
 
-//    public void updateUser(String userId, UpdateUserRequest request){
-//        try {
-//            User user = userRepository.getReferenceById(userId);
-//            if (request.password() != null) {
-//                user.setPassword(request.password());
-//            }
-//            if (request.email() != null && !user.getEmail().equals(request.email())) {
-//                if(!userRepository.existsByEmail(request.email())) {
-//                    user.setEmail(request.email());
-//                } else {
-//                    log.warn("이미 등록된 이메일입니다.");
-//                }
-//            }
-//            if (request.nickname() != null && !user.getNickname().equals(request.nickname())) {
-//                if(!userRepository.existsByNickname(request.nickname())) {
-//                    user.setNickname(request.nickname());
-//                } else {
-//                    log.warn("이미 사용중인 별명입니다.");
-//                }
-//            }
-//        } catch (EntityNotFoundException e) {
-//            log.warn("사용자를 찾을 수 없습니다.");
-//        }
-//    }
+
     public void updateUser(UpdateUserRequest updateUserRequest, String userId) throws Exception{
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER));
         updateUserRequest.nickname().ifPresent(user::updateNickname);
@@ -107,19 +80,6 @@ public class UserService {
         }
         user.updatePassword(passwordEncoder, newPassword);
     }
-
-//    public void deleteUser(String userId, String password) {
-//        try {
-//            User user = userRepository.getReferenceById(userId);
-//            if (user.getPassword().equals(password)) {
-//                userRepository.delete(user);
-//            } else {
-//                log.warn("비밀번호가 일치하지 않습니다.");
-//            }
-//        }catch (EntityNotFoundException e){
-//            log.warn("사용자를 찾을 수 없습니다.");
-//        }
-//    }
 
     public void withdraw(String checkPassword, String userId) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER));

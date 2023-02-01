@@ -415,3 +415,9 @@ ion-icon {
 .body .board-article .board-list .board-item .subscribe-btn .subscribed, .body .board-article .board-list .board-item .subscribe-btn .unsubscribe {
     display: none;
 }
+.article-btn {
+    display: inline-block;
+    border: none;
+    outline: none;
+    background: transparent;
+}

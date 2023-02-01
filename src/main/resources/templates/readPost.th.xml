@@ -53,6 +53,10 @@
         <attr sel="#rateUpForm" th:action="@{chanInfo.slug + '/post/'+ post.id +'/rateUp'}">
             <attr sel="#ratingUp" th:text="${post.rating}"/>
         </attr>
+        <attr sel=".btn-group-sm" sec:authorize="isAuthenticated()" th:if="${userInfo.userId.equals(post.userDto.userId)}">
+            <attr sel="#deletePostForm" th:action="'/'+${chanInfo.slug}+'/post/'+${post.id}+'/delete'"/>
+            <attr sel="#btnModify" th:href="'/'+${chanInfo.slug}+'/post/'+${post.id}+'/modify'"/>
+        </attr>
     </attr>
 
 

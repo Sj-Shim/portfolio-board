@@ -27,9 +27,15 @@
             <attr sel="#chanDesc" th:text="${chanInfo.description}"/>
         </attr>
     </attr>
-
-    <attr sel=".article_write_form" th:action="'/'+${slug} +'/write'" th:method="'POST'">
-
+    <attr sel=".article_write_form" th:action="${postStatus?.update} ? '/'+${slug} +'/post/'+${post.id}+'/modify':'/'+${slug} +'/write'" th:method="'POST'">
+        <attr sel=".write-head" th:text="${postStatus} ?' 글 수정 ':' 글작성 '"/>
+        <attr sel="#inputTitle" th:value="${post?.title} ?: _"/>
+        <attr sel="#content" th:value="${post?.content}" th:text="${post?.content} ?: _"/>
     </attr>
+
+
+
+
+
 
 </thlogic>

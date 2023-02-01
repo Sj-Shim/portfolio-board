@@ -59,6 +59,26 @@ public class MainController {
         return "index";
     }
 
+    @GetMapping("/search")
+    public String channelSearch(@AuthenticationPrincipal BoardPrincipal user,
+                                @RequestParam String keyword,
+
+                                Model m) {
+
+        if(user!=null){
+            UserDto userInfo = userService.getUserInfo(user.getUsername());
+            List<SubscribeDto> subInfo = subscribeService.getUserSubscribes(user.getUsername());
+            m.addAttribute("userInfo", userInfo);
+            m.addAttribute("subList", subInfo);
+        }
+
+        List<ChannelDto> chanList = channelService.getSearchedChannel(keyword);
+        Collections.sort(chanList, Collections.reverseOrder());
+
+        m.addAttribute("chanList", chanList);
+        return "index";
+    }
+
     @GetMapping("/signup")
     public String signUp() {
 

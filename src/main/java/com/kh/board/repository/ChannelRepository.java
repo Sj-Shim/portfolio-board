@@ -3,6 +3,7 @@ package com.kh.board.repository;
 import com.kh.board.domain.Channel;
 import com.kh.board.domain.QChannel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
@@ -20,6 +21,8 @@ public interface ChannelRepository extends JpaRepository<Channel, String>
     List<Channel> findByChannelNameContainingIgnoreCase(String keyword);
 
     List<Channel> findAllByOrderBySubCountDesc();
+    @Query("SELECT c FROM Channel  c WHERE c.slug like %:keyword% or c.channelName like %:keyword%")
+    List<Channel> findByChannelNameContainingIgnoreCaseOrSlugContainingIgnoreCase(String keyword);
 
     Optional<Channel> findByChannelNameEquals(String channelName);
     Optional<Channel> findBySlug(String slug);

@@ -64,6 +64,9 @@ public class ChannelService {
         channelManagerRepository.save(channelManager);
     }
 
+    public List<ChannelDto> getSearchedChannel(String keyword) {
+        return channelRepository.findByChannelNameContainingIgnoreCaseOrSlugContainingIgnoreCase(keyword).stream().map(ChannelDto::from).collect(Collectors.toList());
+    }
 
     public ChannelDto getChannel(String slug) {
         Channel channel = channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND));

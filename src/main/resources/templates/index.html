@@ -63,9 +63,9 @@
           </header>
         <div class="content-wrapper clearfix">
             <article class="container-md board-article">
-                <div class="form-group">
-                    <input type="text" name="channelName" id="keyword" class="form-control" placeholder="채널 찾기..." autocomplete="off">
-                </div>
+                <form method="get" class="form-group" th:action="@{'/search'(keyword=${param.keyword})}">
+                    <input type="text" name="keyword" id="keyword" class="form-control" placeholder="채널 찾기..." autocomplete="off">
+                </form>
                 
                 <div class="board-list">
                     <div class="board-item board-search" th:each="chan : ${chanList}" th:if="${#authorization.expression('isAuthenticated()')}">

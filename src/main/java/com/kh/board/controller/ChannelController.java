@@ -54,8 +54,7 @@ public class ChannelController {
             , @RequestParam(required = false) String keyword
             , @PageableDefault(size = 10, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable){
 
-        String getSlug = slug;
-        Page<PostResponse> posts = postService.searchPosts(getSlug, target, keyword, pageable);
+        Page<PostResponse> posts = postService.searchPosts(slug, target, keyword, pageable);
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(),posts.getTotalPages());
 
         m.addAttribute("posts", posts);
@@ -70,7 +69,7 @@ public class ChannelController {
             m.addAttribute("subList", subInfo);
             m.addAttribute("subCheck", isSub);
         }
-        ChannelDto channelDto = channelService.getChannelBySlug(getSlug);
+        ChannelDto channelDto = channelService.getChannelBySlug(slug);
         m.addAttribute("chanInfo", channelDto);
 
 
@@ -78,7 +77,8 @@ public class ChannelController {
     }
 
     @RequestMapping(value = "/post/{postId}", method = RequestMethod.GET)
-    public String readPost(@AuthenticationPrincipal BoardPrincipal user, @PathVariable(name = "slug") String slug, @PathVariable(name = "postId") Long postId, ModelMap map) {
+    public String readPost(@AuthenticationPrincipal BoardPrincipal user, @PathVariable(name = "slug") String slug, @PathVariable(name = "postId") Long postId, @RequestParam(required = false) SearchType target, @RequestParam(required = false) String keyword
+            , @PageableDefault(size = 10, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable, ModelMap map) {
         if(user!=null){
             UserDto userInfo = userService.getUser(user.nickname());
             List<SubscribeDto> subInfo = subscribeService.getUserSubscribes(user.getUsername());
@@ -90,6 +90,12 @@ public class ChannelController {
         postService.increaseHit(postId);
         PostWithCommentResponse post = PostWithCommentResponse.from(postService.findByPostId(postId));
         ChannelDto channelDto = channelService.getChannelBySlug(slug);
+        Page<PostResponse> posts = postService.searchPosts(slug, target, keyword, pageable);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(),posts.getTotalPages());
+
+        map.addAttribute("posts", posts);
+        map.addAttribute("pageNumbers", barNumbers);
+        map.addAttribute("target", target.values());
 
         map.addAttribute("chanInfo", channelDto);
 

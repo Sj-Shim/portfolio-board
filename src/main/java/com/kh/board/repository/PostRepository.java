@@ -13,10 +13,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.security.core.parameters.P;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,6 +36,8 @@ public interface PostRepository extends JpaRepository<Post, Long>
     Page<Post> findByTitleContainingIgnoreCaseOrContentIsContainingIgnoreCaseOrUser_NicknameContainingIgnoreCase(String keywordT, String keywordC, String keywordN, Pageable pageable);
     /** 제목 검색 */
     Page<Post> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
+    @Query("SELECT p FROM Post p WHERE (p.title LIKE %:keyword% OR p.content LIKE %:keyword%) AND p.channel.slug LIKE :slug ORDER BY p.createdDate DESC")
+    Page<Post> findByKeywordAndSlug(@Param("keyword") String keyword, @Param("slug") String slug, Pageable pageable);
     /** 제목/내용 검색 */
     Page<Post> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String keyword, String keyword2, Pageable pageable);
     /** 내용 검색*/

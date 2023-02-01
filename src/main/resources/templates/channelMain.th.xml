@@ -47,7 +47,7 @@
                     <attr sel="span" th:data-filter="${post.userDto.nickname}" th:text="${post.userDto.nickname}"/>
                 </attr>
                 <attr sel=".col-time">
-                    <attr sel="time" th:datetime="${post.createdDate}" data-format="Q" th:text="${#temporals.format(post.createdDate, 'yy/MM/dd HH:mm')}" />
+                    <attr sel="time" th:datetime="${post.createdDate}" data-format="Q" th:text="${#temporals.format(post.createdDate, 'yy/MM/dd HH:mm:ss')}" />
                 </attr>
                 <attr sel=".col-view" th:text="${post.hit}"/>
                 <attr sel=".col-rate" th:text="${post.rating}"/>

@@ -77,7 +77,8 @@ public class PostService {
         Page<PostResponse> set1 = switch (target) {
             case ALL -> postRepository.findByTitleContainingIgnoreCaseOrContentIsContainingIgnoreCaseOrUser_NicknameContainingIgnoreCase(keyword, keyword, keyword, pageable).map(PostResponse::from);
             case TITLE -> postRepository.findByTitleContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
-            case TITLEORCONTENT -> postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword, pageable).map(PostResponse::from);
+//            case TITLEORCONTENT -> postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword, pageable).map(PostResponse::from);
+            case TITLEORCONTENT -> postRepository.findByKeywordAndSlug(keyword, slug, pageable).map(PostResponse::from);
             case CONTENT -> postRepository.findByContentContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
             case USER -> postRepository.findByUser_NicknameContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
         };

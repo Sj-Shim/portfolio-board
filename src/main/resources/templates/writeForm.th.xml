@@ -14,7 +14,7 @@
                 <attr sel="span" th:title="${chanInfo.channelName}+' 채널'" th:text="${chanInfo.channelName}+' 채널'"/>
             </attr>
             <attr sel=".buttons">
-                <attr sel=".subscribe-btn" th:href="@{'/'+${chanInfo.slug}+'/subscribe'}" th:data-chan="${chanInfo.channelName}" />
+                <attr sel=".subscribe-btn" th:href="@{'/'+${chanInfo.slug}+'/subscribe'}" th:data-chan="${chanInfo.channelName}" th:class="'btn btn-sm subscribe-btn' + (${subCheck} ? ' active' : '')"/>
             </attr>
         </attr>
         <attr sel=".description">

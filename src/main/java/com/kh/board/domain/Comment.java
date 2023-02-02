@@ -43,7 +43,7 @@ public class Comment extends AuditingTimeEntity{
 
     private boolean isRemoved = false;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
 //    , fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}
     @OrderBy("createdDate desc")
     @ToString.Exclude

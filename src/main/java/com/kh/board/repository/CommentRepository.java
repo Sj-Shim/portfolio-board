@@ -5,6 +5,8 @@ import com.kh.board.domain.Post;
 import com.kh.board.domain.QComment;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.StringExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,15 +18,20 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import java.util.List;
 import java.util.Optional;
 
+import static com.querydsl.jpa.JPAExpressions.selectFrom;
+
 @RepositoryRestResource
 public interface CommentRepository extends JpaRepository<Comment, Long>
                                 , QuerydslPredicateExecutor<Comment>
                                 , QuerydslBinderCustomizer<QComment> {
 
+
     Optional<Comment> findById(Long id);
     List<Comment> findByPost_Id(Long postId);
     List<Comment> findDistinctByContentContainingIgnoreCase(String keyword);
     Page<Post> findDistinctByContentContainingIgnoreCase(String keyword, Pageable pageable);
+
+    List<Comment> findAllByPost(Post post);
 
     void deleteByIdAndUser_UserId(Long commentId, String userId);
     @Override

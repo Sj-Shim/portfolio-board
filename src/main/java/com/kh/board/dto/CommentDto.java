@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 /**
  * A DTO for the {@link com.kh.board.domain.Comment} entity
  */
-public record CommentDto(Long id
+public record CommentDto(
+        Long id
         , Long postId
         , UserDto user
         , String content

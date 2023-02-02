@@ -50,7 +50,7 @@ public class Post extends AuditingTimeEntity{
     @ColumnDefault("0")
     private Integer hit;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> commentList = new ArrayList<>();
 
     @Builder

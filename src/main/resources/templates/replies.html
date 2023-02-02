@@ -14,7 +14,7 @@
             <div class="content">
                 <div class="info-row clearfix">
                 <span class="user-info">
-                    <span th:text="${comment.user.nickname}">nickname</span>
+                    <span th:text="${comment.user != null ? comment.user.nickname : '삭제됨'}">nickname</span>
                 </span>
                     <div class="right">
                         <time th:text="${#temporals.format(comment.createdDate, 'yy/MM/dd HH:mm:ss')}"></time>
@@ -25,7 +25,19 @@
                         </a>
                     </div>
                 </div>
-
+                <div class="info-row clearfix" sec:authorize="isAuthenticated()" th:if="${comment.user != null ? userInfo.userId.equals(comment.user.userId):false}">
+                    <div class="right">
+                        <div class="btn-group-sm">
+                            <form th:action="'/'+${chanInfo.slug}+'/post/'+${post.id}+'/comment/'+${comment.id}+'/delete'" method="post">
+                                <button type="button" class="article-btn" data-bs-toggle="modal" th:data-cid="${comment.id}" data-bs-target="#staticBackdrop">
+                                    수정
+                                </button>
+                                <span class="sep"></span>
+                                <button type="submit" class="article-btn">삭제</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <form class="message">
                     <div class="text">
                         <pre th:text="${comment.content}">content</pre>

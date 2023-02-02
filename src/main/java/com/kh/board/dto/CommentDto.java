@@ -74,7 +74,17 @@ public record CommentDto(
     }
 
     public static CommentDto convertCommentToDto(Comment comment) {
-        return new CommentDto(
+        return comment.isRemoved()?
+                new CommentDto(
+                        comment.getId(),
+                        null,
+                        "삭제된 댓글입니다",
+                        new ArrayList<>(),
+                        null,
+                        null
+                )
+                :
+                new CommentDto(
                 comment.getId(),
                 UserDto.from(comment.getUser()),
                 comment.getContent(),

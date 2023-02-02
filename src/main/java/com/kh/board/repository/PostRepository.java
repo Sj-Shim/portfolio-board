@@ -33,28 +33,33 @@ public interface PostRepository extends JpaRepository<Post, Long>
 
 
     /** 전체 검색*/
-    Page<Post> findByTitleContainingIgnoreCaseOrContentIsContainingIgnoreCaseOrUser_NicknameContainingIgnoreCase(String keywordT, String keywordC, String keywordN, Pageable pageable);
+    @Query("SELECT p FROM Post p WHERE (p.title LIKE %:keyword% OR p.content LIKE %:keyword% OR p.user.nickname LIKE %:keyword%) AND p.channel.slug LIKE :slug ORDER BY p.createdDate DESC")
+    Page<Post> findByAllAndSlug(@Param("keyword") String keyword, @Param("slug") String slug, Pageable pageable);
+
     /** 제목 검색 */
-    Page<Post> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
+    @Query("SELECT p FROM Post p WHERE (p.title LIKE %:keyword%) AND p.channel.slug LIKE :slug ORDER BY p.createdDate DESC")
+    Page<Post> findByTitleAndSlug(@Param("keyword") String keyword, @Param("slug") String slug, Pageable pageable);
+
+    /** 제목/내용 검색 */
     @Query("SELECT p FROM Post p WHERE (p.title LIKE %:keyword% OR p.content LIKE %:keyword%) AND p.channel.slug LIKE :slug ORDER BY p.createdDate DESC")
     Page<Post> findByKeywordAndSlug(@Param("keyword") String keyword, @Param("slug") String slug, Pageable pageable);
-    /** 제목/내용 검색 */
-    Page<Post> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String keyword, String keyword2, Pageable pageable);
+
     /** 내용 검색*/
-    Page<Post> findByContentContainingIgnoreCase(String keyword, Pageable pageable);
+    @Query("SELECT p FROM Post p WHERE (p.content LIKE %:keyword%) AND p.channel.slug LIKE :slug ORDER BY p.createdDate DESC")
+    Page<Post> findByContentAndSlug(@Param("keyword") String keyword, @Param("slug") String slug, Pageable pageable);
+
     /** 작성자 검색*/
-    Page<Post> findByUser_NicknameContainingIgnoreCase(String keyword, Pageable pageable);
+    @Query("SELECT p FROM Post p WHERE (p.user.nickname LIKE %:keyword%) AND p.channel.slug LIKE :slug ORDER BY p.createdDate DESC")
+    Page<Post> findByNicknameAndSlug(@Param("keyword") String keyword, @Param("slug") String slug, Pageable pageable);
+
+
     Page<Post> findByChannelEquals(Channel channel, Pageable pageable);
-//    /** 코멘트 내용 검색*/
-//    Page<Post> findByComments_ContentContainingIgnoreCase(String keyword, Pageable pageable);
+
 
     /** 채널별 게시글 전체*/
     Page<Post> findByChannel_Slug(String slug, Pageable pageable);
 
 
-
-    /** 채널별 카테고리 필터*/
-//    Page<Post> findByChannel_ChannelNameAndCategory_CategoryName(String channelName, String categoryName, Pageable pageable);
 
     void deleteByIdAndUser_UserId(Long id, String userId);
 

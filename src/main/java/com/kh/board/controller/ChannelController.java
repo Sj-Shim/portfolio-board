@@ -5,10 +5,7 @@ import com.kh.board.domain.Subscribe;
 import com.kh.board.domain.type.FormStatus;
 import com.kh.board.domain.type.SearchType;
 import com.kh.board.dto.*;
-import com.kh.board.dto.request.CommentRequest;
-import com.kh.board.dto.request.PostRequest;
-import com.kh.board.dto.request.PostUpdateDto;
-import com.kh.board.dto.request.SubscribeRequest;
+import com.kh.board.dto.request.*;
 import com.kh.board.dto.response.PostResponse;
 //import com.kh.board.repository.CategoryRepository;
 import com.kh.board.dto.response.PostWithCommentResponse;
@@ -30,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -243,7 +241,29 @@ public class ChannelController {
         return "redirect:/{slug}/post/{postId}";
     }
 
+    @PostMapping("/post/{postId}/comment/{commentId}/delete")
+    public String deleteComment(
+            @PathVariable String slug,
+            @PathVariable Long postId,
+            @PathVariable Long commentId) {
+        commentService.remove(commentId);
 
 
+        return "redirect:/"+slug+"/post/"+postId;
+    }
+
+    @PostMapping("/post/{postId}/comment/{commentId}/update")
+    public String updateComment(
+            @PathVariable String slug,
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @RequestParam String content) {
+        CommentUpdateRequest commentUpdateRequest = new CommentUpdateRequest(Optional.ofNullable(content));
+        String trim = content.trim();
+        if(content != null || !trim.isBlank()){
+            commentService.update(commentId, commentUpdateRequest);
+        }
+        return "redirect:/"+slug+"/post/"+postId;
+    }
 
 }

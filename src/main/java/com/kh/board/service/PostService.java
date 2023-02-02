@@ -74,27 +74,28 @@ public class PostService {
         return postRepository.findByChannelEquals(channelRepository.findBySlugEquals(slug).orElseThrow(()->new EntityNotFoundException("searchPosts 슬러그로 채널 못찾음:" +slug)), pageable).map(PostResponse::from);
         }
 
-        Page<PostResponse> set1 = switch (target) {
-            case ALL -> postRepository.findByTitleContainingIgnoreCaseOrContentIsContainingIgnoreCaseOrUser_NicknameContainingIgnoreCase(keyword, keyword, keyword, pageable).map(PostResponse::from);
-            case TITLE -> postRepository.findByTitleContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
-//            case TITLEORCONTENT -> postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword, pageable).map(PostResponse::from);
-            case TITLEORCONTENT -> postRepository.findByKeywordAndSlug(keyword, slug, pageable).map(PostResponse::from);
-            case CONTENT -> postRepository.findByContentContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
-            case USER -> postRepository.findByUser_NicknameContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
-        };
-            Page<PostResponse> set2 = postRepository.findByChannelEquals(channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND)), pageable).map(PostResponse::from);
-
-            Set<PostResponse> setPost = new HashSet<>(set2.getContent());
-            setPost.retainAll(set1.getContent());
-            Page<PostResponse> combinedPage = new PageImpl<>(new ArrayList<>(setPost), pageable, setPost.size());
-            return combinedPage;
-
-//        return switch (target){
+//        Page<PostResponse> set1 = switch (target) {
 //            case ALL -> postRepository.findByTitleContainingIgnoreCaseOrContentIsContainingIgnoreCaseOrUser_NicknameContainingIgnoreCase(keyword, keyword, keyword, pageable).map(PostResponse::from);
 //            case TITLE -> postRepository.findByTitleContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
-//            case TITLEORCONTENT -> postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword, pageable).map(PostResponse::from);
+////            case TITLEORCONTENT -> postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword, pageable).map(PostResponse::from);
+//            case TITLEORCONTENT -> postRepository.findByKeywordAndSlug(keyword, slug, pageable).map(PostResponse::from);
 //            case CONTENT -> postRepository.findByContentContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
 //            case USER -> postRepository.findByUser_NicknameContainingIgnoreCase(keyword, pageable).map(PostResponse::from);
+//        };
+//            Page<PostResponse> set2 = postRepository.findByChannelEquals(channelRepository.findById(slug).orElseThrow(() -> new ChannelException(ChannelExceptionType.CHANNEL_NOT_FOUND)), pageable).map(PostResponse::from);
+//
+//            Set<PostResponse> setPost = new HashSet<>(set2.getContent());
+//            setPost.retainAll(set1.getContent());
+//            Page<PostResponse> combinedPage = new PageImpl<>(new ArrayList<>(setPost), pageable, setPost.size());
+//            return combinedPage;
+
+        return switch (target) {
+            case ALL -> postRepository.findByAllAndSlug(keyword, slug, pageable).map(PostResponse::from);
+            case TITLE -> postRepository.findByTitleAndSlug(keyword, slug, pageable).map(PostResponse::from);
+            case TITLEORCONTENT -> postRepository.findByKeywordAndSlug(keyword, slug, pageable).map(PostResponse::from);
+            case CONTENT -> postRepository.findByContentAndSlug(keyword, slug, pageable).map(PostResponse::from);
+            case USER -> postRepository.findByNicknameAndSlug(keyword, slug, pageable).map(PostResponse::from);
+        };
 
     }
 

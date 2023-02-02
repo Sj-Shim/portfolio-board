@@ -10,9 +10,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
@@ -27,6 +29,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long>
 
 
     Optional<Comment> findById(Long id);
+
+    @Query("SELECT c from Comment c LEFT JOIN FETCH c.parent where c.id = :id")
+    Optional<Comment> findCommentByIdWithParent(@Param("id") Long id);
     List<Comment> findByPost_Id(Long postId);
     List<Comment> findDistinctByContentContainingIgnoreCase(String keyword);
     Page<Post> findDistinctByContentContainingIgnoreCase(String keyword, Pageable pageable);

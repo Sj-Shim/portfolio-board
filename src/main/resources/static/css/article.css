@@ -452,3 +452,6 @@ button:not(:disabled), [type=button]:not(:disabled), [type=reset]:not(:disabled)
         margin-left: 0.75rem;
     }
 }
+.modal-content .reply-form {
+    margin: 0;
+}

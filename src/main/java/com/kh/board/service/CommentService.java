@@ -78,14 +78,20 @@ public class CommentService {
 
 
     public void remove(Long id) throws CommentException {
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new CommentException(CommentExceptionType.NOT_FOUND_COMMENT));
 
-        if(!comment.getUser().getUserId().equals(SecurityUtil.getLoginUsername())){
-            throw new CommentException(CommentExceptionType.NOT_AUTHORITY_DELETE_COMMENT);
+        Comment comment = commentRepository.findCommentByIdWithParent(id).orElseThrow(()->new CommentException(CommentExceptionType.NOT_FOUND_COMMENT));
+        if(comment.getReplies().size() != 0){
+            comment.remove();
+        } else {
+            commentRepository.delete(getDeletableAncestorComment(comment));
         }
-        comment.remove();
-        List<Comment> removableCommentList = comment.findRemovableList();
-        commentRepository.deleteAll(removableCommentList);
+    }
+
+    private Comment getDeletableAncestorComment(Comment comment) {
+        Comment parent = comment.getParent();
+        if(parent != null && parent.getReplies().size() == 1 && parent.isRemoved())
+            return getDeletableAncestorComment(parent);
+        return comment;
     }
 
     public List<CommentDto> convertNestedStructure(List<Comment> comments){

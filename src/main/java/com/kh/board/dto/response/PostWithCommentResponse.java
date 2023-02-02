@@ -25,7 +25,7 @@ public record PostWithCommentResponse(
         Integer rating,
         Integer hit,
         LocalDateTime createdDate,
-        List<CommentResponse> comments
+        List<CommentResponse> commentResponses
 ) implements Serializable {
 
     public static PostWithCommentResponse of (Long id,
@@ -36,8 +36,8 @@ public record PostWithCommentResponse(
                                               Integer rating,
                                               Integer hit,
                                               LocalDateTime createdDate,
-                                              List<CommentResponse> comments) {
-        return new PostWithCommentResponse(id, channelDto, userDto, title, content, rating, hit, createdDate, comments);
+                                              List<CommentResponse> commentResponses) {
+        return new PostWithCommentResponse(id, channelDto, userDto, title, content, rating, hit, createdDate, commentResponses);
     }
 
     public static PostWithCommentResponse from (Post post) {

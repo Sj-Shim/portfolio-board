@@ -3,10 +3,10 @@ package com.kh.board.service;
 import com.kh.board.domain.Comment;
 import com.kh.board.domain.Post;
 import com.kh.board.domain.User;
+import com.kh.board.dto.CommentDto;
 import com.kh.board.dto.UserDto;
 import com.kh.board.dto.request.CommentRequest;
 import com.kh.board.dto.request.CommentUpdateRequest;
-import com.kh.board.dto.response.CommentResponse;
 import com.kh.board.exception.*;
 import com.kh.board.repository.CommentRepository;
 import com.kh.board.repository.CustomCommentRepository;
@@ -38,9 +38,9 @@ public class CommentService {
     @Autowired private final UserRepository userRepository;
 
 
-    public List<Comment> gerCommentListByPost(Long postId) {
+    public List<CommentDto> gerCommentListByPost(Long postId) {
         postRepository.findById(postId).orElseThrow(() -> new PostException(PostExceptionType.POST_NOT_FOUND));
-        return customCommentRepository.findAllByPostId(postId);
+        return convertNestedStructure(customCommentRepository.findAllByPostId(postId));
     }
 
     public void save(Long postId, CommentRequest commentRequest) {
@@ -88,7 +88,17 @@ public class CommentService {
         commentRepository.deleteAll(removableCommentList);
     }
 
-//    public List<CommentResponse>
+    public List<CommentDto> convertNestedStructure(List<Comment> comments){
+        List<CommentDto> result = new ArrayList<>();
+        Map<Long, CommentDto> map = new HashMap<>();
+        comments.stream().forEach(c->{
+            CommentDto response = CommentDto.convertCommentToDto(c);
+            map.put(response.id(), response);
+            if(c.getParent() != null) map.get(c.getParent().getId()).replies().add(response);
+            else result.add(response);
+        });
+        return result;
+    }
 
 
 }

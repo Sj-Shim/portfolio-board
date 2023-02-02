@@ -283,12 +283,12 @@ pre {
     color: #000;
     color: var(--color-text-color);
 }
-.body .board-article .article-comment .list-area .comment-wrapper>.comment-wrapper {
+.body .board-article .article-comment .list-area .comment-wrapper> .comment-wrapper {
     margin-left: 2rem;
     margin-right: 0;
 }
 @media screen and (max-width: 767px){
-    .body .board-article .article-comment .list-area .comment-wrapper>.comment-wrapper {
+    .body .board-article .article-comment .list-area .comment-wrapper> .comment-wrapper {
         margin-left: 0.75rem;
     }
 }
@@ -441,5 +441,14 @@ button:not(:disabled), [type=button]:not(:disabled), [type=reset]:not(:disabled)
 @media screen and (max-width: 767px){
     .body .board-article .article-list .list-table .vrow.column .vcol.col-id>* {
         display: none;
+    }
+}
+.comment-wrapper> div > .comment-wrapper {
+    margin-left: 2rem;
+    margin-right: 0;
+}
+@media screen and (max-width: 767px){
+    .comment-wrapper> div > .comment-wrapper {
+        margin-left: 0.75rem;
     }
 }

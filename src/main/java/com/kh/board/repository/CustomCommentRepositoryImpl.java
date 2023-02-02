@@ -23,7 +23,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository{
                 .where(comment.post.id.eq(postId))
                 .orderBy(
                         comment.parent.id.asc().nullsFirst(),
-                        comment.createdDate.desc()
+                        comment.createdDate.asc()
                 ).fetch();
     }
 }

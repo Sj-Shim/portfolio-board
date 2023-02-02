@@ -61,29 +61,8 @@
 
 
     <attr sel=".list-area">
-        <attr sel=".comment-wrapper" th:each="comment : ${post.comments}">
-            <attr sel="div.comment-item" th:id="'c_'+${comment.commentId}">
-                <attr sel=".content">
-                    <attr sel=".user-info">
-                        <attr sel="span" th:text="${comment.userDto.nickname}"/>
-                    </attr>
-                    <attr sel=".right">
-                        <attr sel="time" th:text="${#temporals.format(comment.createdDate, 'yy/MM/dd HH:mm:ss')}"/>
-                        <attr sel=".reply-link" th:data-target="${comment.commentId}" th:href="'javascript:void(0)'"/>
-                    </attr>
-                    <attr sel=".message">
-                        <attr sel=".text" th:text="${comment.content}" th:href="'javascript:void(0)'"/>
-                    </attr>
-                </attr>
-            </attr>
-            <attr sel=".reply-form" th:replace="replyForm :: .reply-form"></attr>
-            <attr sel=".comment-wrapper/comment-wrapper" th:if="${not comment.replies.isEmpty && comment.commentId == reply.parentId}" th:each="reply : ${comment.replies}">
-                <attr sel=".comment-item" th:id="${reply.replyId}">
-                    <attr sel=".user-info/span" th:text="${reply.userDto.nickname}"/>
-                    <attr sel=".reply-link" th:data-target="${reply.replyId}"/>
-                    <attr sel=".message/.text/pre" th:text="${reply.content}"/>
-                </attr>
-            </attr>
+        <attr sel=".comment-wrapper" th:replace="commentList :: .comment-wrapper">
+
         </attr>
     </attr>
 
@@ -103,7 +82,7 @@
 
     <attr sel="div.article-list">
         <attr sel="div.list-table">
-            <attr sel="a" th:href="@{${fromList.id}(page=${posts.number})}" th:class="'vrow column' + (${fromList.id == post.id} ?' table-secondary':'')" th:each="fromList :${posts}">
+            <attr sel="a" th:href="@{${fromList.id}(page=${posts.number})}" th:class="'vrow column'" th:each="fromList :${posts}">
                 <attr sel=".col-id" th:text="${fromList.id}"/>
                 <attr sel=".col-title">
                     <attr sel=".title" th:text="${fromList.title}"/>

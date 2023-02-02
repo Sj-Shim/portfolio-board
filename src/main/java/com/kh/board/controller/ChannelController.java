@@ -4,10 +4,7 @@ import com.kh.board.domain.Post;
 import com.kh.board.domain.Subscribe;
 import com.kh.board.domain.type.FormStatus;
 import com.kh.board.domain.type.SearchType;
-import com.kh.board.dto.ChannelDto;
-import com.kh.board.dto.PostDto;
-import com.kh.board.dto.SubscribeDto;
-import com.kh.board.dto.UserDto;
+import com.kh.board.dto.*;
 import com.kh.board.dto.request.CommentRequest;
 import com.kh.board.dto.request.PostRequest;
 import com.kh.board.dto.request.PostUpdateDto;
@@ -76,8 +73,12 @@ public class ChannelController {
         return "channelMain";
     }
 
-    @RequestMapping(value = "/post/{postId}", method = RequestMethod.GET)
-    public String readPost(@AuthenticationPrincipal BoardPrincipal user, @PathVariable(name = "slug") String slug, @PathVariable(name = "postId") Long postId, @RequestParam(required = false) SearchType target, @RequestParam(required = false) String keyword
+    @GetMapping(value = "/post/{postId}")
+    public String readPost(@AuthenticationPrincipal BoardPrincipal user,
+                           @PathVariable(name = "slug") String slug,
+                           @PathVariable(name = "postId") Long postId,
+                           @RequestParam(required = false) SearchType target,
+                           @RequestParam(required = false) String keyword
             , @PageableDefault(size = 10, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable, ModelMap map) {
         if(user!=null){
             UserDto userInfo = userService.getUser(user.nickname());
@@ -92,15 +93,17 @@ public class ChannelController {
         ChannelDto channelDto = channelService.getChannelBySlug(slug);
         Page<PostResponse> posts = postService.searchPosts(slug, target, keyword, pageable);
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(),posts.getTotalPages());
+        List<CommentDto> comments = commentService.gerCommentListByPost(postId);
+
 
         map.addAttribute("posts", posts);
         map.addAttribute("pageNumbers", barNumbers);
         map.addAttribute("target", target.values());
+        map.addAttribute("comments", comments);
 
         map.addAttribute("chanInfo", channelDto);
 
         map.addAttribute("post", post);
-        map.addAttribute("comments", post.comments());
         map.addAttribute("totalCount", postService.getPostCount());
 
         return "readPost";

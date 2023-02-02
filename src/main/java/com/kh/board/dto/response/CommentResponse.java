@@ -40,23 +40,6 @@ public record CommentResponse(
         );
     }
 
-    public static CommentResponse convertCommentToDto(Comment comment) {
-        return new CommentResponse(
-                comment.getId()
-                , comment.getContent()
-                , comment.
-        )
-    }
 
-//    public static CommentResponse from(CommentDto commentDto, List<ReplyDto> replies) {
-//        return new CommentResponse(
-//                commentDto.postId(),
-//                commentDto.id(),
-//                commentDto.content(),
-//                commentDto.createdDate(),
-//                replies.stream().map(ReplyResponse::from).collect(Collectors.toList()),
-//                commentDto.user()
-//        );
-//    }
 
 }

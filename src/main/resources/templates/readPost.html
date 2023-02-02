@@ -193,35 +193,8 @@
                                         </div>
                                     </div>
                                     <form action="" class="reply-form"></form>
-                                    <!--대댓글-->
-                                    <div class="comment-wrapper">
-                                        <div class="comment-item" id="c_cNo">
-                                            <div class="content">
-                                                <div class="info-row clearfix">
-                                                <span class="user-info">
-                                                    <span>닉네임</span>
-                                                </span>
-                                                    <div class="right">
-                                                        <time></time>
-                                                        <span class="sep"></span>
-                                                        <a href="" class="reply-link" data-target="부모번호">
-                                                            <ion-icon name="return-up-back-outline"></ion-icon>
-                                                            답글
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="message">
-                                                    <div class="text">
-                                                        <pre>내용</pre>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-<!--                                <a href="" class="newcomment-alert w-100 fetch-comment d-block re-event">-->
-<!--                                    <span class="text">새로운 댓글이 달렸습니다.</span>-->
-<!--                                </a>-->
+
                             </div>
                             <form action="" class="reply-form write" method="post" id="commentForm">
                                 <input type="hidden" name="slug" value="">
@@ -399,7 +372,7 @@
 <script>
     $(function() {
         $(".reply-link").on("click", function (){
-            $(this).parents(".comment-wrapper").children(".reply-form").css({
+            $(this).closest(".comment-wrapper").children(".reply-form").css({
                 display: 'block',
             });
         })

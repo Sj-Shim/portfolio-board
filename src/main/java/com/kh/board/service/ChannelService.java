@@ -100,6 +100,8 @@ public class ChannelService {
             Set<ChannelManager> channelManagers = channel.getChannelManagers();
             for (ChannelManager manager : channelManagers){
                 if(manager.getUser().getUserId().equals(SecurityUtil.getLoginUsername()) && manager.getChannel().equals(channel) && manager.getManagerLevel().getName().equals("관리자")){
+                    subscribeRepository.deleteAllInBatch(subscribeRepository.findByChannel_Slug(slug));
+                    channelManagerRepository.deleteAllInBatch(channelManagerRepository.findByChannel_Slug(slug));
                     channelRepository.delete(channel);
                 }
             }

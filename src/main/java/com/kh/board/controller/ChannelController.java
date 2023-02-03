@@ -2,6 +2,7 @@ package com.kh.board.controller;
 
 import com.kh.board.domain.Post;
 import com.kh.board.domain.Subscribe;
+import com.kh.board.domain.User;
 import com.kh.board.domain.type.FormStatus;
 import com.kh.board.domain.type.SearchType;
 import com.kh.board.dto.*;
@@ -40,6 +41,7 @@ public class ChannelController {
     private final UserService userService;
     private final SubscribeService subscribeService;
     private final PaginationService paginationService;
+    private final ChannelManagerService channelManagerService;
 
     @GetMapping
     public String getChannelMain(@AuthenticationPrincipal BoardPrincipal user
@@ -265,5 +267,55 @@ public class ChannelController {
         }
         return "redirect:/"+slug+"/post/"+postId;
     }
+
+    @GetMapping("/setting")
+    public String updateChannelPage(
+            @PathVariable String slug,
+            @AuthenticationPrincipal BoardPrincipal user,
+            Model m){
+        if(user!=null){
+            UserDto userInfo = userService.getUser(user.nickname());
+            List<SubscribeDto> subInfo = subscribeService.getUserSubscribes(user.getUsername());
+            boolean isSub = subscribeService.checkChanSub(slug);
+            m.addAttribute("userInfo", userInfo);
+            m.addAttribute("subList", subInfo);
+            m.addAttribute("subCheck", isSub);
+        }
+
+        ChannelDto channelDto = channelService.getChannel(slug);
+        m.addAttribute("info", channelDto);
+
+        return "channelSetting";
+    }
+
+    @PostMapping("/setting")
+    public String updateChannel(
+            @PathVariable String slug,
+            @RequestParam String description,
+            @RequestParam String userNickname) {
+
+        if(description!=null && !description.trim().isEmpty()){
+            ChannelUpdateDto channelUpdateDto = new ChannelUpdateDto(Optional.ofNullable(description));
+            channelService.updateChannel(slug, channelUpdateDto);
+        }
+        if(userNickname!=null && !userNickname.trim().isEmpty()){
+            UserDto user = userService.getUser(userNickname);
+            channelManagerService.addChannelManager(user.userId(), slug);
+        }
+
+        return "redirect:/"+slug;
+    }
+
+    @PostMapping("/delete")
+    public String deleteChannel(
+            @RequestParam String slug) {
+
+        channelService.deleteChannel(slug);
+
+
+        return "redirect:/";
+
+    }
+
 
 }

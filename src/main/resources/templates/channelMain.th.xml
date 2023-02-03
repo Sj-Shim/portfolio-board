@@ -10,6 +10,7 @@
         <attr sel=".title" th:href="@{'/'+${chanInfo.slug}}" th:data-channel="${chanInfo.channelName}+'채널'">
             <attr sel="span" th:title="${chanInfo.channelName}+' 채널'" th:text="${chanInfo.channelName}+' 채널'"/>
         </attr>
+        <attr sel="#channelSetting" sec:authorize="isAuthenticated()" th:if="${chanInfo.channelManagerDtos()[0].user().userId.equals(userInfo.userId)}" th:href="'/'+${chanInfo.slug}+'/setting'"/>
         <attr sel=".buttons">
             <attr sel=".subscribe-btn" th:href="@{'/'+${chanInfo.slug}+'/subscribe'}" th:data-chan="${chanInfo.channelName}" th:class="'btn btn-sm subscribe-btn' + (${subCheck} ? ' active' : '')"/>
         </attr>

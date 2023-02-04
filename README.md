@@ -6,7 +6,7 @@
 - IntelliJ IDEA 22.2.3 (Ultimate Edition)
 - Java 17
 - Gradle 7.6
-- Spring Boot 2.7.8
+- Spring Boot 2.7.7
 # 기술 세부 스택
  Spring Boot
  - Spring Web

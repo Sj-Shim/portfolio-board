@@ -69,7 +69,6 @@ public class UserService {
     public void updateUser(UpdateUserRequest updateUserRequest, String userId) throws Exception{
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new UserException(UserExceptionType.NOT_FOUND_MEMBER));
         updateUserRequest.nickname().ifPresent(user::updateNickname);
-        updateUserRequest.email().ifPresent(user::updateEmail);
     }
 
 
@@ -79,6 +78,10 @@ public class UserService {
             throw new UserException(UserExceptionType.WRONG_PASSWORD);
         }
         user.updatePassword(passwordEncoder, newPassword);
+    }
+
+    public boolean checkPassword(String password) {
+        return passwordEncoder.matches(password, userRepository.findById(SecurityUtil.getLoginUsername()).orElseThrow(()-> new UserException(UserExceptionType.NOT_FOUND_MEMBER)).getPassword());
     }
 
     public void withdraw(String checkPassword, String userId) throws Exception {

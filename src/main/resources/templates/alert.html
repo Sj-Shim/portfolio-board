@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>alert</title>
+</head>
+<body>
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  var msg = /*[[${msg}]]*/;
+  var url = /*[[${url}]]*/;
+  alert(msg);
+  location.href = url;
+  /*]]>*/
+</script>
+</body>
+</html>
